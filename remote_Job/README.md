@@ -1,0 +1,3 @@
+# Remote Job-Finder--Django
+
+Remote JobFinder is an advanced job posting platform built with Django. It provides a consistent experience for both employers and employees. Employers can easily register their company profiles, log in securely, and post job openings. They have access to a detailed dashboard where they can view their job posting list and review applicant details. Employers can also easily update or delete their job postings as needed. Employees, on the other hand, can create accounts, save relevant job opportunities, and apply. They can also access their saved job list for easy reference. JobFinder has an easy-to-use interface and efficient functionality to help you with your job search and hiring.
