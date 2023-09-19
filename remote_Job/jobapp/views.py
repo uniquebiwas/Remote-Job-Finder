@@ -363,7 +363,6 @@ def job_edit_view(request, id=id):
         instance = form.save(commit=False)
         instance.save()
         # for save tags
-        # form.save_m2m()
         messages.success(request, 'Your Job Post Was Successfully Updated!')
         return redirect(reverse("jobapp:single-job", kwargs={
             'id': instance.id
