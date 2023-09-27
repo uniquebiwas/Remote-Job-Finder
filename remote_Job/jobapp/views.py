@@ -396,3 +396,6 @@ def about_us_view(request):
     return render(request, 'jobapp/about_us.html')
 def contact_us_view(request):
     return render(request, 'jobapp/contact_us.html')
+
+def terms_condition_view(request):
+    return render(request, 'jobapp/terms-condition.html')
