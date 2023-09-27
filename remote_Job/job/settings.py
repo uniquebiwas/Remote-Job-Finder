@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'taggit',
     'user_visit',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

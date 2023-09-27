@@ -7,7 +7,6 @@ from jobapp.models import *
 from ckeditor.widgets import CKEditorWidget
 
 
-    
 
 class JobForm(forms.ModelForm):
     
@@ -210,3 +209,8 @@ class JobEditForm(forms.ModelForm):
             job.save()
         return job
 
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    subject = forms.CharField(max_length=200)
+    message = forms.CharField(widget=forms.Textarea)
