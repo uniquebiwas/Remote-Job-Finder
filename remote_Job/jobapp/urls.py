@@ -1,6 +1,7 @@
 from django.urls import path
 from jobapp import views
 
+
 app_name = "jobapp"
 
 
@@ -14,6 +15,7 @@ urlpatterns = [
     path('bookmark-job/<int:id>/', views.job_bookmark_view, name='bookmark-job'),
     path('about-us/', views.about_us_view, name='about_us'),
     path('contact-us/', views.contact_us_view, name='contact_us'),
+    path('terms-condition/', views.terms_condition_view, name='terms-condition'),
     path('result/', views.search_result_view, name='search_result'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/employer/job/<int:id>/applicants/', views.all_applicants_view, name='applicants'),
@@ -22,5 +24,4 @@ urlpatterns = [
     path('dashboard/employer/close/<int:id>/', views.make_complete_job_view, name='complete'),
     path('dashboard/employer/delete/<int:id>/', views.delete_job_view, name='delete'),
     path('dashboard/employee/delete-bookmark/<int:id>/', views.delete_bookmark_view, name='delete-bookmark'),
-
 ]
