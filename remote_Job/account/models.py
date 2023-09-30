@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+# from phonenumber_field.modelfields import PhoneNumberField
 from account.managers import CustomUserManager
 
 JOB_TYPE = (
@@ -21,6 +22,9 @@ class User(AbstractUser):
                               })
     role = models.CharField(choices=ROLE,  max_length=10)
     gender = models.CharField(choices=JOB_TYPE, max_length=1)
+
+    phone_number = models.CharField(max_length=10, null=True, blank=True)  # Store phone number as a string
+    pdf_document = models.FileField(upload_to='pdf_documents/', null=True, blank=True)
 
 
     USERNAME_FIELD = "email"
