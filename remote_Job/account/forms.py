@@ -1,21 +1,24 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
+# from phonenumber_field.formfields import PhoneNumberField
+# from django_countries.fields import CountryField
+
 
 from account.models import User
 
-
 class EmployeeRegistrationForm(UserCreationForm):
-
-
+    phone_number = forms.CharField(max_length=10, required=False, label='Phone Number',
+                                   widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
     def __init__(self, *args, **kwargs):
-        UserCreationForm.__init__(self, *args, **kwargs)
+        super(EmployeeRegistrationForm, self).__init__(*args, **kwargs)
         self.fields['gender'].required = True
         self.fields['first_name'].label = "First Name :"
         self.fields['last_name'].label = "Last Name :"
         self.fields['password1'].label = "Password :"
         self.fields['password2'].label = "Confirm Password :"
         self.fields['email'].label = "Email :"
+        self.fields['phone_number'].label = "Phone Number :"
         self.fields['gender'].label = "Gender :"
 
         self.fields['first_name'].widget.attrs.update(
@@ -43,12 +46,15 @@ class EmployeeRegistrationForm(UserCreationForm):
                 'placeholder': 'Confirm Password',
             }
         )
+        self.fields['phone_number'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Phone Number',
+            }
+        )
 
     class Meta:
-
-        model=User
-
-        fields = ['first_name', 'last_name', 'email', 'password1', 'password2', 'gender']
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2', 'gender']
 
     def clean_gender(self):
         gender = self.cleaned_data.get('gender')
@@ -65,10 +71,15 @@ class EmployeeRegistrationForm(UserCreationForm):
 
 
 class EmployerRegistrationForm(UserCreationForm):
+    pdf_document = forms.FileField(label='Registration Documents (PDF)', required=False),
+    phone_number = forms.CharField(max_length=10, required=False, label='Phone Number',
+                                   widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
+
     def __init__(self, *args, **kwargs):
         UserCreationForm.__init__(self, *args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
+        
         self.fields['first_name'].label = "Company Name"
         self.fields['last_name'].label = "Company Address"
         self.fields['password1'].label = "Password"
@@ -99,11 +110,16 @@ class EmployerRegistrationForm(UserCreationForm):
                 'placeholder': 'Confirm Password',
             }
         )
+        self.fields['phone_number'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Phone Number',
+            }
+        )
+
+
     class Meta:
-
-        model=User
-
-        fields = ['first_name', 'last_name', 'email', 'password1', 'password2',]
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2', 'pdf_document']
 
 
     def save(self, commit=True):
@@ -161,7 +177,12 @@ class EmployeeProfileEditForm(forms.ModelForm):
                 'placeholder': 'Enter Last Name',
             }
         )
+        self.fields['phone_number'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Phone Number',
+            }
+        )
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "gender"]
+        fields = ["first_name", "last_name", 'phone_number',"gender"]

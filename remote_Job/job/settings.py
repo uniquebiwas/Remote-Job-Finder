@@ -45,8 +45,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'taggit',
     'user_visit',
-    'bootstrap4',
+    'crispy_forms',
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
