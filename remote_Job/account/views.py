@@ -22,41 +22,45 @@ def get_success_url(request):
 
 
 
+
+
 def employee_registration(request):
+    if request.method == 'POST':
+        form = EmployeeRegistrationForm(request.POST, request.FILES)  # Ensure request.FILES is passed
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.pdf_document = request.FILES.get('pdf_document')  # Use get() to avoid KeyError
+            user.save()
+            messages.success(request, 'Your Profile Was Successfully Created!')
+            return redirect('account:login')
+    else:
+        form = EmployeeRegistrationForm()
 
-    """
-    Handle Employee Registration
+    context = {
+        'form': form
+    }
 
-    """
-    form = EmployeeRegistrationForm(request.POST or None)
-    if form.is_valid():
-        form = form.save()
-        return redirect('account:login')
-    context={
-        
-            'form':form
-        }
-
-    return render(request,'account/employee-registration.html',context)
+    return render(request, 'account/employee-registration.html', context)
 
 
 def employer_registration(request):
+    if request.method == 'POST':
+        form = EmployerRegistrationForm(request.POST, request.FILES)  # Include request.FILES to handle file uploads
+        if form.is_valid():
+            employer = form.save(commit=False)
+            employer.pdf_document = request.FILES.get('pdf_document')  # Get uploaded PDF file
+            employer.save()
+            messages.success(request, 'Your Profile Was Successfully Created!')
+            return redirect('account:login')
+    else:
+        form = EmployerRegistrationForm()
 
-    """
-    Handle Employee Registration 
+    context = {
+        'form': form
+    }
 
-    """
+    return render(request, 'account/employer-registration.html', context)
 
-    form = EmployerRegistrationForm(request.POST or None)
-    if form.is_valid():
-        form = form.save()
-        return redirect('account:login')
-    context={
-        
-            'form':form
-        }
-
-    return render(request,'account/employer-registration.html',context)
 
 
 @login_required(login_url=reverse_lazy('accounts:login'))

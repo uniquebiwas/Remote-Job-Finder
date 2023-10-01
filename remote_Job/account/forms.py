@@ -8,8 +8,10 @@ from django.contrib.auth.forms import UserCreationForm
 from account.models import User
 
 class EmployeeRegistrationForm(UserCreationForm):
-    phone_number = forms.CharField(max_length=10, required=False, label='Phone Number',
+    phone_number = forms.CharField(max_length=10, required=True, label='Phone Number',
                                    widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
+    pdf_document = forms.FileField(label='Upload your CV',required=True,
+                                   widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your CV'}))
     def __init__(self, *args, **kwargs):
         super(EmployeeRegistrationForm, self).__init__(*args, **kwargs)
         self.fields['gender'].required = True
@@ -20,6 +22,7 @@ class EmployeeRegistrationForm(UserCreationForm):
         self.fields['email'].label = "Email :"
         self.fields['phone_number'].label = "Phone Number :"
         self.fields['gender'].label = "Gender :"
+        self.fields['pdf_document'].label = "Upload your CV :"
 
         self.fields['first_name'].widget.attrs.update(
             {
@@ -51,10 +54,11 @@ class EmployeeRegistrationForm(UserCreationForm):
                 'placeholder': 'Enter Phone Number',
             }
         )
+        
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2', 'gender']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'pdf_document', 'password1', 'password2', 'gender']
 
     def clean_gender(self):
         gender = self.cleaned_data.get('gender')
@@ -68,10 +72,25 @@ class EmployeeRegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+    def clean_pdf_document(self):
+        pdf_document = self.cleaned_data.get('pdf_document')
+
+        # Check if a file was uploaded
+        if not pdf_document:
+            raise forms.ValidationError('Please upload your CV.')
+
+        # Check if the uploaded file is a PDF
+        if not pdf_document.name.endswith('.pdf'):
+            raise forms.ValidationError('Invalid file format. Please upload a PDF file.')
+
+        # You can also add additional checks for file size, etc. if needed
+
+        return pdf_document
 
 
 class EmployerRegistrationForm(UserCreationForm):
-    pdf_document = forms.FileField(label='Registration Documents (PDF)', required=False),
+    pdf_document = forms.FileField(label='Registration Documents (PDF)',required=True,
+                                   widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your Documents'}))
     phone_number = forms.CharField(max_length=10, required=False, label='Phone Number',
                                    widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
 
@@ -79,7 +98,7 @@ class EmployerRegistrationForm(UserCreationForm):
         UserCreationForm.__init__(self, *args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
-        
+        self.fields['pdf_document'].label = "Registration Documents (PDF)"
         self.fields['first_name'].label = "Company Name"
         self.fields['last_name'].label = "Company Address"
         self.fields['password1'].label = "Password"

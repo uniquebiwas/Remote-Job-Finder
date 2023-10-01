@@ -42,7 +42,7 @@
         </div>
         {% endfor %}
         {% endif %}
-        <form method="POST" action="" class="p-4 border rounded">
+        <form method="POST" action="" enctype="multipart/form-data" class="p-4 border rounded" >
           {% csrf_token %}
           {% for field in form %}
           {% if field.name == 'gender' %}
