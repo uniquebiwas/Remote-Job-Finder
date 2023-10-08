@@ -41,27 +41,27 @@
         </div>
         {% endfor %}
         {% endif %}
-        <form method="POST" action="" enctype="multipart/form-data"  class="p-4 border rounded">
+        <form method="POST" action="" enctype="multipart/form-data" class="p-4 border rounded">
           {% csrf_token %}
           {% for field in form %}
-
-          <div class="row form-group">
-            <div class="col-md-12 mb-3 mb-md-0">
-              <label class="text-black" for="id_{{ field.name }}">{{ field.label }}</label>
-              <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
-                id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-            </div>
-          </div>
-
-
+              <div class="row form-group">
+                  <div class="col-md-12 mb-3 mb-md-0">
+                      <label class="text-black" for="id_{{ field.name }}">
+                          {{ field.label }}
+                          {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                      </label>
+                      <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
+                          id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
+                  </div>
+              </div>
           {% endfor %}
           <div class="row form-group">
-            <div class="col-md-12">
-              <input type="submit" value="Sign Up" class="btn px-4 btn-primary text-white">
-            </div>
+              <div class="col-md-12">
+                  <input type="submit" value="Sign Up" class="btn px-4 btn-primary text-white">
+              </div>
           </div>
-
-        </form>
+      </form>
+      
       </div>
     </div>
   </div>

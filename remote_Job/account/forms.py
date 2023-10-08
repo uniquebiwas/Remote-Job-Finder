@@ -8,74 +8,60 @@ from django.contrib.auth.forms import UserCreationForm
 from account.models import User
 
 class EmployeeRegistrationForm(UserCreationForm):
+    MAX_FILE_SIZE_MB = 5  # 5 MB limit
+
     phone_number = forms.CharField(max_length=10, required=True, label='Phone Number',
                                    widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
-    pdf_document = forms.FileField(label='Upload your CV',required=True,
+    pdf_document = forms.FileField(label='Upload your CV', required=True,
                                    widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your CV'}))
-    def __init__(self, *args, **kwargs):
-        super(EmployeeRegistrationForm, self).__init__(*args, **kwargs)
-        self.fields['gender'].required = True
-        self.fields['first_name'].label = "First Name :"
-        self.fields['last_name'].label = "Last Name :"
-        self.fields['password1'].label = "Password :"
-        self.fields['password2'].label = "Confirm Password :"
-        self.fields['email'].label = "Email :"
-        self.fields['phone_number'].label = "Phone Number :"
-        self.fields['gender'].label = "Gender :"
-        self.fields['pdf_document'].label = "Upload your CV :"
-
-        self.fields['first_name'].widget.attrs.update(
-            {
-                'placeholder': 'Enter First Name',
-            }
-        )
-        self.fields['last_name'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Last Name',
-            }
-        )
-        self.fields['email'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Email',
-            }
-        )
-        self.fields['password1'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Password',
-            }
-        )
-        self.fields['password2'].widget.attrs.update(
-            {
-                'placeholder': 'Confirm Password',
-            }
-        )
-        self.fields['phone_number'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Phone Number',
-            }
-        )
-        
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'pdf_document', 'password1', 'password2', 'gender']
 
-    def clean_gender(self):
-        gender = self.cleaned_data.get('gender')
-        if not gender:
-            raise forms.ValidationError("Gender is required")
-        return gender
+    def __init__(self, *args, **kwargs):
+        super(EmployeeRegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['gender'].required = True
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['first_name'].label = "First Name:"
+        self.fields['last_name'].label = "Last Name:"
+        self.fields['pdf_document'].label = "Upload your CV:"
+        self.fields['password1'].label = "Password:"
+        self.fields['password2'].label = "Confirm Password:"
+        self.fields['email'].label = "Email:"
+        self.fields['phone_number'].label = "Phone Number:"
+
+        self.fields['first_name'].widget.attrs.update({
+            'placeholder': 'Enter First Name',
+        })
+        self.fields['last_name'].widget.attrs.update({
+            'placeholder': 'Enter Last Name',
+        })
+        self.fields['email'].widget.attrs.update({
+            'placeholder': 'Enter Email',
+        })
+        self.fields['password1'].widget.attrs.update({
+            'placeholder': 'Enter Password',
+        })
+        self.fields['password2'].widget.attrs.update({
+            'placeholder': 'Confirm Password',
+        })
+        self.fields['phone_number'].widget.attrs.update({
+            'placeholder': 'Enter Phone Number',
+        })
 
     def save(self, commit=True):
-        user = UserCreationForm.save(self,commit=False)
+        user = super(EmployeeRegistrationForm, self).save(commit=False)
         user.role = "employee"
+
         if commit:
             user.save()
         return user
+
     def clean_pdf_document(self):
         pdf_document = self.cleaned_data.get('pdf_document')
 
-        # Check if a file was uploaded
         if not pdf_document:
             raise forms.ValidationError('Please upload your CV.')
 
@@ -83,62 +69,39 @@ class EmployeeRegistrationForm(UserCreationForm):
         if not pdf_document.name.endswith('.pdf'):
             raise forms.ValidationError('Invalid file format. Please upload a PDF file.')
 
-        # You can also add additional checks for file size, etc. if needed
+        # Check file size
+        max_size = self.MAX_FILE_SIZE_MB * 1024 * 1024  # Convert MB to bytes
+        if pdf_document.size > max_size:
+            raise forms.ValidationError('File size must be no more than {} MB.'.format(self.MAX_FILE_SIZE_MB))
 
         return pdf_document
 
 
 class EmployerRegistrationForm(UserCreationForm):
-    pdf_document = forms.FileField(label='Registration Documents (PDF)',required=True,
+    pdf_document = forms.FileField(label='Registration Documents (PDF)', required=True,
                                    widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your Documents'}))
-    phone_number = forms.CharField(max_length=10, required=False, label='Phone Number',
+    phone_number = forms.CharField(max_length=15, required=True, label='Phone Number',
                                    widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
-
-    def __init__(self, *args, **kwargs):
-        UserCreationForm.__init__(self, *args, **kwargs)
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-        self.fields['pdf_document'].label = "Registration Documents (PDF)"
-        self.fields['first_name'].label = "Company Name"
-        self.fields['last_name'].label = "Company Address"
-        self.fields['password1'].label = "Password"
-        self.fields['password2'].label = "Confirm Password"
-
-        self.fields['first_name'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Company Name',
-            }
-        )
-        self.fields['last_name'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Company Address',
-            }
-        )
-        self.fields['email'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Email',
-            }
-        )
-        self.fields['password1'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Password',
-            }
-        )
-        self.fields['password2'].widget.attrs.update(
-            {
-                'placeholder': 'Confirm Password',
-            }
-        )
-        self.fields['phone_number'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Phone Number',
-            }
-        )
-
-
+    
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2', 'pdf_document']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'pdf_document', 'password1', 'password2']
+
+    def __init__(self, *args, **kwargs):
+        super(EmployerRegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['first_name'].label = "Company Name"
+        self.fields['last_name'].label = "Company Address"
+        self.fields['pdf_document'].label = "Registration Documents (PDF)"
+        self.fields['phone_number'].widget.attrs.update({
+            'placeholder': 'Enter Phone Number',
+        })
+
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'placeholder': field.label,
+            })
 
 
     def save(self, commit=True):
@@ -201,7 +164,8 @@ class EmployeeProfileEditForm(forms.ModelForm):
                 'placeholder': 'Enter Phone Number',
             }
         )
+        # self.fields['pdf_document'].label = "Update Your CV (If you want to: )"
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", 'phone_number',"gender"]
+        fields = ["first_name", "last_name", 'phone_number','gender']
