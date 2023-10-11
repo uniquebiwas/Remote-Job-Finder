@@ -129,7 +129,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465  # SMTP server port (587 for TLS)
+EMAIL_USE_SSL = True
+# EMAIL_USE_TLS = False
+EMAIL_HOST_USER = 'remotejob007@gmail.com'
+EMAIL_HOST_PASSWORD = 'onky iwgz ibip oyho'
 
+# Optionally, you can set the default 'from' address for outgoing emails
+DEFAULT_FROM_EMAIL = 'remotejob007@gmail.com'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
