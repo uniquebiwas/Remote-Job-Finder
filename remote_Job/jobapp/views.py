@@ -394,8 +394,37 @@ def job_edit_view(request, id=id):
     return render(request, 'jobapp/job-edit.html', context)
 def about_us_view(request):
     return render(request, 'jobapp/about_us.html')
-def contact_us_view(request):
-    return render(request, 'jobapp/contact_us.html')
-
 def terms_condition_view(request):
     return render(request, 'jobapp/terms-condition.html')
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import JsonResponse
+from django.http import HttpResponse
+
+def contact_us_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+
+            try:
+                send_mail(
+                    subject,
+                    f'Name: {name}\nEmail: {email}\nMessage: {message}',
+                    settings.EMAIL_HOST_USER,
+                    ['remotejob007@gmail.com'],  # Replace with the recipient's email address
+                    fail_silently=False,
+                )
+                messages.success(request, 'Contact form has been successfully sent.')
+            except Exception as e:
+                messages.error(request, f'An error occurred: {str(e)}')
+        else:
+            messages.error(request, 'Fill out the form completely.')
+    else:
+        form = ContactForm()  # Create an empty form if the request method is GET
+    
+    return render(request, 'jobapp/contact_us.html', {'form': form})
+    

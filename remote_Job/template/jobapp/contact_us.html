@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
 
     <section class="home-section section-hero inner-page overlay bg-image"
@@ -16,31 +17,34 @@
         </div>
     </section>
 
+    
 
     <section class="site-section" id="next-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-5 mb-lg-0">
+                    {% include 'messages.html' %}
                     <form action="#" method="POST">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="{{ form.name.id_for_label }}">Name</label>
-                            <input type="text" class="form-control" id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" value="{{ form.name.value }}">
+                            <input type="text" class="form-control" id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" placeholder="{{ form.name.field.widget.attrs.placeholder }}">
                         </div>
                         <div class="form-group">
                             <label for="{{ form.email.id_for_label }}">Email</label>
-                            <input type="email" class="form-control" id="{{ form.email.id_for_label }}" name="{{ form.email.name }}" value="{{ form.email.value }}">
+                            <input type="email" class="form-control" id="{{ form.email.id_for_label }}" name="{{ form.email.name }}" placeholder="{{ form.email.field.widget.attrs.placeholder }}">
                         </div>
                         <div class="form-group">
                             <label for="{{ form.subject.id_for_label }}">Subject</label>
-                            <input type="text" class="form-control" id="{{ form.subject.id_for_label }}" name="{{ form.subject.name }}" value="{{ form.subject.value }}">
+                            <input type="text" class="form-control" id="{{ form.subject.id_for_label }}" name="{{ form.subject.name }}" placeholder="{{ form.subject.field.widget.attrs.placeholder }}">
                         </div>
                         <div class="form-group">
                             <label for="{{ form.message.id_for_label }}">Message</label>
-                            <textarea class="form-control" id="{{ form.message.id_for_label }}" name="{{ form.message.name }}">{{ form.message.value }}</textarea>
+                            <textarea class="form-control" id="{{ form.message.id_for_label }}" name="{{ form.message.name }}" placeholder="{{ form.message.field.widget.attrs.placeholder }}"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Send Message</button>
                     </form>
+                    
                     
                 </div>
                 <div class="col-lg-5 ml-auto">
