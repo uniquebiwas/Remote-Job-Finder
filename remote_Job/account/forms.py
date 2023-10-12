@@ -111,19 +111,28 @@ class EmployerRegistrationForm(UserCreationForm):
             user.save()
         return user
 
-
 class UserLoginForm(forms.Form):
-    email =  forms.EmailField(
-    widget=forms.EmailInput(attrs={ 'placeholder':'Email',})
-) 
-    password = forms.CharField(strip=False,widget=forms.PasswordInput(attrs={
-        
-        'placeholder':'Password',
-    }))
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': 'Email'}),
+    )
+    password = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+    )
+    remember_me = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(),
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)  # Get request from kwargs
+        super(UserLoginForm, self).__init__(*args, **kwargs)
 
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
+        remember_me = self.cleaned_data.get("remember_me")
 
         if email and password:
             self.user = authenticate(email=email, password=password)
@@ -137,6 +146,10 @@ class UserLoginForm(forms.Form):
 
             if not user.is_active:
                 raise forms.ValidationError("User is not Active.")
+
+        if not remember_me:
+            # If "Remember Me" is not checked, set session expiry to 0
+            self.request.session.set_expiry(0)
 
         return super(UserLoginForm, self).clean(*args, **kwargs)
 
@@ -172,3 +185,13 @@ class EmployeeProfileEditForm(forms.ModelForm):
 
 
 
+# from django.contrib.auth.forms import PasswordResetForm
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField()
+
+from django import forms
+from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
+
+class PasswordResetForm(BasePasswordResetForm):
+    email = forms.EmailField(label='Email', max_length=254, widget=forms.EmailInput(attrs={'autocomplete': 'email'}))
