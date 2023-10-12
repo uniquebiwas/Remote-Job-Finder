@@ -1,73 +1,133 @@
 {% extends 'base.html' %}
 {% load static %} 
 {% block content %}
-
-
-
-    <!-- HOME -->
-    <section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/bgrr.jpg' %}');" id="home-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-7">
-            <h1 class="text-white font-weight-bold">{{ applicant.get_full_name }}</h1>
-            <div class="custom-breadcrumbs">
-              <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
-              <span class="text-white"><strong>Applicant</strong></span>
-            </div>
-          </div>
+<!-- HOME -->
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/bgrr.jpg' %}');" id="home-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7">
+        <h1 class="text-white font-weight-bold">{{ applicant.get_full_name }}</h1>
+        <div class="custom-breadcrumbs">
+          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+          <span class="text-white"><strong>Applicant</strong></span>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section class="site-section block__18514" id="next-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3">
-            <div class="border p-4 rounded">
-              <ul class="list-unstyled block__47528 mb-0">
-                <li><span class="active">Applicant</span></li>
-                <li><a href="#">Topic 1</a></li>
-                <li><a href="#">Topic 2</a></li>
-          
-              </ul>
-            </div>
-          </div>
-          
-          <div class="col-lg-5">
-            <span class="text-primary d-block mb-6"><span class="icon-magnet display-1"></span></span>
-            <h2 class="mb-4">{{ applicant.get_full_name }}</h2>
-            <p><h2>Email :</h2>{{ applicant.email }}</p>
-            <p><h3>Phone Number :</h3><a href="tel:+977{{ applicant.phone_number }}">+977 {{ applicant.phone_number }}</a></p>
-            
-            <p><h3>Gender :</h3>
-                {% if applicant.gender == 'M' %}
-                    Male
-                {% else %}
-                    Female
-                {% endif %}
-            </p>
-            <p><a href="mailto:{{ applicant.email }}" class="btn btn-primary btn-md mt-4">Contact</a></p>
-            
-          </div>
-          <div class="col-lg-3">
-            <div class="border p-4 rounded">
-              
-                <h2>Resume:</h2>
-                {% if applicant.pdf_document %}
-              <a href="{{ applicant.pdf_document.url }}" target="_blank" class="btn btn-primary btn-md mt-4">Preview PDF</a>
-              {% else %}
-              No PDF Available
-              {% endif %}
-          
-            
-            </div>
-          </div>
-
-          
+<section class="site-section block__18514" id="next-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="border p-4 rounded">
+          <ul class="list-unstyled block__47528 mb-0">
+            <li><span class="active">Applicant</span></li>
+            <li><a href="#">Topic 1</a></li>
+            <li><a href="#">Topic 2</a></li>
+          </ul>
         </div>
       </div>
-    </section>
-    
+      
+      <div class="col-lg-5">
+        <span class="text-primary d-block mb-6"><span class="icon-magnet display-1"></span></span>
+        <h3 class="mb-4">{{ applicant.get_full_name }}</h3>
+        <p><h3>Email :</h3>{{ applicant.email }}</p>
+        <p><h3>Phone Number :</h3><a href="tel:+977{{ applicant.phone_number }}">+977 {{ applicant.phone_number }}</a></p>
+        
+        <p><h3>Gender :</h3>
+            {% if applicant.gender == 'M' %}
+                Male
+            {% else %}
+                Female
+            {% endif %}
+        </p>
+        <div class="col-lg-5">
+          <!-- Button to trigger modal with dynamic buttonType parameter -->
+          <button type="button" class="btn btn-success btn-md mt-4" data-toggle="modal" data-target="#emailPositionModal" onclick="setButtonType('select')">Select</button>
+          <button type="button" class="btn btn-danger btn-md mt-4" data-toggle="modal" data-target="#emailPositionModal" onclick="setButtonType('reject')">Reject</button>
 
+        </div>
+      </div>
+    </div>
+  </section>
+  
+<!-- Modal -->
+<div class="modal fade" id="emailPositionModal" tabindex="-1" role="dialog" aria-labelledby="emailPositionModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="emailPositionModalLabel">Enter Email and Position</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="emailPositionForm">
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="position">Position:</label>
+            <input type="text" class="form-control" id="position" required>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="sendEmail()">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var selectedButtonType = ''; // Variable to store the selected button type
+
+  function setButtonType(buttonType) {
+    selectedButtonType = buttonType;
+  }
+
+  function sendEmail() {
+    var email = document.getElementById("email").value;
+    var position = document.getElementById("position").value;
+
+    if (selectedButtonType && email && position) {
+      // Send email and position data to the backend
+      fetch('/send-email/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+          email: email,
+          position: position,
+          buttonType: selectedButtonType
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Show a success message to the user
+          alert('Email sent successfully! Candidate ' + (selectedButtonType === 'select' ? 'selected' : 'rejected') + '.');
+          // Close the modal after successful submission
+          $('#emailPositionModal').modal('hide');
+          // Reload the page after successful submission
+          window.location.reload();
+        } else {
+          // Show an error message to the user
+          alert('Failed to send email. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Show an error message to the user
+        alert('Failed to send email. Please try again.');
+      });
+    } else {
+      // Show a validation error if any of the fields are empty
+      alert("Button type, Email, and Position are required!");
+    }
+  }
+</script>
 
 {% endblock %}

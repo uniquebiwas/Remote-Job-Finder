@@ -5,6 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+
+
 app_name = "jobapp"
 
 
@@ -27,6 +29,9 @@ urlpatterns = [
     path('dashboard/employer/close/<int:id>/', views.make_complete_job_view, name='complete'),
     path('dashboard/employer/delete/<int:id>/', views.delete_job_view, name='delete'),
     path('dashboard/employee/delete-bookmark/<int:id>/', views.delete_bookmark_view, name='delete-bookmark'),
+
+    path('send-email/', views.send_email, name='send_email'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

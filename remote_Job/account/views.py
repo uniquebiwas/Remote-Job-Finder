@@ -90,28 +90,22 @@ def employee_edit_profile(request, id=id):
 
 
 def user_logIn(request):
-
-    """
-    Provides users to logIn
-
-    """
-
-    form = UserLoginForm(request.POST or None)
-    
-
-    if request.user.is_authenticated:
-        return redirect('/')
-    
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST, request=request)  # Pass the request object to the form
+        if form.is_valid():
+            user = form.get_user()
+            auth.login(request, user)
+            # Redirect to the appropriate success URL or homepage
+            return HttpResponseRedirect(get_success_url(request))
     else:
-        if request.method == 'POST':
-            if form.is_valid():
-                auth.login(request, form.get_user())
-                return HttpResponseRedirect(get_success_url(request))
+        form = UserLoginForm(request=request)  # Pass the request object to the form when creating an instance
+
     context = {
         'form': form,
     }
 
-    return render(request,'account/login.html',context)
+    return render(request, 'account/login.html', context)
+
 
 
 def user_logOut(request):
@@ -121,3 +115,21 @@ def user_logOut(request):
     auth.logout(request)
     messages.success(request, 'You are Successfully logged out')
     return redirect('account:login')
+
+
+# def user_logIn(request):
+#     if request.method == 'POST':
+#         form = UserLoginForm(request.POST, request=request)  # Pass the request object to the form
+#         if form.is_valid():
+#             user = form.get_user()
+#             auth.login(request, user)
+#             # Redirect to the appropriate success URL or homepage
+#             return HttpResponseRedirect(get_success_url(request))
+#     else:
+#         form = UserLoginForm(request=request)  # Pass the request object to the form when creating an instance
+
+#     context = {
+#         'form': form,
+#     }
+
+#     return render(request, 'account/login.html', context)
