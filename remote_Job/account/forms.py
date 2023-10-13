@@ -72,7 +72,7 @@ class EmployeeRegistrationForm(UserCreationForm):
         # Check file size
         max_size = self.MAX_FILE_SIZE_MB * 1024 * 1024  # Convert MB to bytes
         if pdf_document.size > max_size:
-            raise forms.ValidationError('File size must be no more than {} MB.'.format(self.MAX_FILE_SIZE_MB))
+            raise forms.ValidationError('File size must be no more than {2} MB.'.format(self.MAX_FILE_SIZE_MB))
 
         return pdf_document
 
