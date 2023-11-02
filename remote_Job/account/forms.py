@@ -1,64 +1,56 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
-# from phonenumber_field.formfields import PhoneNumberField
-# from django_countries.fields import CountryField
 
-
+# Import User model from account.models
 from account.models import User
 
+# Form for employee registration
 class EmployeeRegistrationForm(UserCreationForm):
-    MAX_FILE_SIZE_MB = 5  # 5 MB limit
+    MAX_FILE_SIZE_MB = 5  # 5 MB limit for file upload
 
+    # Additional fields for employee registration form
     phone_number = forms.CharField(max_length=10, required=True, label='Phone Number',
                                    widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
-    pdf_document = forms.FileField(label='Upload your CV', required=True,
+    pdf_document = forms.FileField(label='Upload your CV (PDF)', required=True,
                                    widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your CV'}))
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'pdf_document', 'password1', 'password2', 'gender']
 
+    # Customizing form field labels and placeholders
     def __init__(self, *args, **kwargs):
         super(EmployeeRegistrationForm, self).__init__(*args, **kwargs)
+        # Set required fields and labels for better user experience
         self.fields['gender'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['first_name'].label = "First Name:"
         self.fields['last_name'].label = "Last Name:"
-        self.fields['pdf_document'].label = "Upload your CV:"
+        self.fields['pdf_document'].label = "Upload your CV (PDF):"
         self.fields['password1'].label = "Password:"
         self.fields['password2'].label = "Confirm Password:"
         self.fields['email'].label = "Email:"
         self.fields['phone_number'].label = "Phone Number:"
+        # Set placeholders for input fields
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Enter First Name'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Enter Email'})
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Enter Password'})
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password'})
+        self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
 
-        self.fields['first_name'].widget.attrs.update({
-            'placeholder': 'Enter First Name',
-        })
-        self.fields['last_name'].widget.attrs.update({
-            'placeholder': 'Enter Last Name',
-        })
-        self.fields['email'].widget.attrs.update({
-            'placeholder': 'Enter Email',
-        })
-        self.fields['password1'].widget.attrs.update({
-            'placeholder': 'Enter Password',
-        })
-        self.fields['password2'].widget.attrs.update({
-            'placeholder': 'Confirm Password',
-        })
-        self.fields['phone_number'].widget.attrs.update({
-            'placeholder': 'Enter Phone Number',
-        })
-
+    # Custom save method to assign role and handle file validation
     def save(self, commit=True):
         user = super(EmployeeRegistrationForm, self).save(commit=False)
-        user.role = "employee"
+        user.role = "employee"  # Assign 'employee' role to the user
 
         if commit:
             user.save()
         return user
 
+    # Custom validation for PDF document
     def clean_pdf_document(self):
         pdf_document = self.cleaned_data.get('pdf_document')
 
@@ -72,12 +64,13 @@ class EmployeeRegistrationForm(UserCreationForm):
         # Check file size
         max_size = self.MAX_FILE_SIZE_MB * 1024 * 1024  # Convert MB to bytes
         if pdf_document.size > max_size:
-            raise forms.ValidationError('File size must be no more than {2} MB.'.format(self.MAX_FILE_SIZE_MB))
+            raise forms.ValidationError('File size must be no more than {} MB.'.format(self.MAX_FILE_SIZE_MB))
 
         return pdf_document
 
-
+# Form for employer registration
 class EmployerRegistrationForm(UserCreationForm):
+    # Additional fields for employer registration form
     pdf_document = forms.FileField(label='Registration Documents (PDF)', required=True,
                                    widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your Documents'}))
     phone_number = forms.CharField(max_length=15, required=True, label='Phone Number',
@@ -87,6 +80,7 @@ class EmployerRegistrationForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'pdf_document', 'password1', 'password2']
 
+    # Customizing form field labels and placeholders
     def __init__(self, *args, **kwargs):
         super(EmployerRegistrationForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].required = True
@@ -94,23 +88,20 @@ class EmployerRegistrationForm(UserCreationForm):
         self.fields['first_name'].label = "Company Name"
         self.fields['last_name'].label = "Company Address"
         self.fields['pdf_document'].label = "Registration Documents (PDF)"
-        self.fields['phone_number'].widget.attrs.update({
-            'placeholder': 'Enter Phone Number',
-        })
-
+        self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
+        # Set placeholders for input fields
         for field in self.fields.values():
-            field.widget.attrs.update({
-                'placeholder': field.label,
-            })
+            field.widget.attrs.update({'placeholder': field.label})
 
-
+    # Custom save method to assign role
     def save(self, commit=True):
-        user = UserCreationForm.save(self,commit=False)
-        user.role = "employer"
+        user = UserCreationForm.save(self, commit=False)
+        user.role = "employer"  # Assign 'employer' role to the user
         if commit:
             user.save()
         return user
 
+# Form for user login
 class UserLoginForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'placeholder': 'Email'}),
@@ -129,15 +120,17 @@ class UserLoginForm(forms.Form):
         self.request = kwargs.pop('request', None)  # Get request from kwargs
         super(UserLoginForm, self).__init__(*args, **kwargs)
 
+    # Custom clean method for user authentication and session handling
     def clean(self, *args, **kwargs):
         email = self.cleaned_data.get("email")
         password = self.cleaned_data.get("password")
         remember_me = self.cleaned_data.get("remember_me")
 
         if email and password:
-            self.user = authenticate(email=email, password=password)
+            self.user = authenticate(email=email, password=password)  # Authenticate user
+
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(email=email)  # Get user by email
             except User.DoesNotExist:
                 raise forms.ValidationError("User Does Not Exist.")
 
@@ -148,50 +141,53 @@ class UserLoginForm(forms.Form):
                 raise forms.ValidationError("User is not Active.")
 
         if not remember_me:
-            # If "Remember Me" is not checked, set session expiry to 0
+            # If "Remember Me" is not checked, set session expiry to 0 (session ends when browser is closed)
             self.request.session.set_expiry(0)
 
         return super(UserLoginForm, self).clean(*args, **kwargs)
 
+    # Get authenticated user
     def get_user(self):
         return self.user
 
 
-
+# Form for editing employee profile
 class EmployeeProfileEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs.update(
-            {
-                'placeholder': 'Enter First Name',
-            }
-        )
-        self.fields['last_name'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Last Name',
-            }
-        )
-        self.fields['phone_number'].widget.attrs.update(
-            {
-                'placeholder': 'Enter Phone Number',
-            }
-        )
-        # self.fields['pdf_document'].label = "Update Your CV (If you want to: )"
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Enter First Name'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
+        self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
+        # Uncomment the line below to add a placeholder for the PDF document field
+        # self.fields['pdf_document'].widget.attrs.update({'placeholder': 'Update Your CV (If you want to: )'})
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", 'phone_number','gender']
+        fields = ["first_name", "last_name", "phone_number", "gender"]
 
+        # Specify labels for form fields
+        labels = {
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'phone_number': 'Phone Number',
+            'gender': 'Gender',
+        }
 
-
-# from django.contrib.auth.forms import PasswordResetForm
-
+# Custom form for initiating password reset process
 class ForgotPasswordForm(forms.Form):
-    email = forms.EmailField()
-
-from django import forms
+    email = forms.EmailField(
+        label='Email',  # Label for the email field
+        widget=forms.EmailInput(attrs={'placeholder': 'Enter your Email', 'autocomplete': 'email'}),
+        # Email input field with placeholder and autocomplete attribute
+    )
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
+# Customized password reset form, based on Django's BasePasswordResetForm
 class PasswordResetForm(BasePasswordResetForm):
-    email = forms.EmailField(label='Email', max_length=254, widget=forms.EmailInput(attrs={'autocomplete': 'email'}))
+    email = forms.EmailField(
+        label='Email',  # Label for the email field
+        max_length=254,  # Maximum length for the email field
+        widget=forms.EmailInput(attrs={'placeholder': 'Enter your Email', 'autocomplete': 'email'}),
+        # Email input field with placeholder and autocomplete attribute
+    )
