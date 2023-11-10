@@ -7,8 +7,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.core.serializers import serialize
-
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import JsonResponse
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+import json
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.http import JsonResponse
 from account.models import User
 from jobapp.forms import *
 from jobapp.models import *
@@ -17,6 +24,7 @@ from .forms import ContactForm
 User = get_user_model()
 
 
+# Home view displaying job listings and pagination
 def home_view(request):
     """
     View to display the home page, including job listings and pagination.
@@ -38,6 +46,7 @@ def home_view(request):
     page_obj = paginator.get_page(page_number)
 
     if request.is_ajax():
+        # AJAX handling
         job_lists = []
         job_objects_list = page_obj.object_list.values()
         for job_list in job_objects_list:
@@ -76,6 +85,7 @@ def home_view(request):
     # Render the HTML template with the context data
     return render(request, 'jobapp/index.html', context)
 
+# Function to display a list of jobs
 def job_list_View(request):
     """
     View to display a list of jobs.
@@ -96,6 +106,7 @@ def job_list_View(request):
     # Render the HTML template with the context data
     return render(request, 'jobapp/job-list.html', context)
 
+# View for employers to create a job post
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def create_job_View(request):
@@ -127,6 +138,7 @@ def create_job_View(request):
     # Render the HTML template with the context data
     return render(request, 'jobapp/post-job.html', context)
 
+# View to provide the ability to view job details
 def single_job_view(request, id):
     """
     View to provide the ability to view job details.
@@ -148,7 +160,7 @@ def single_job_view(request, id):
     # Render the HTML template with the context data
     return render(request, 'jobapp/job-single.html', context)
 
-
+# View to search for jobs with multiple fields
 def search_result_view(request):
     """
     View to search for jobs with multiple fields.
@@ -186,6 +198,7 @@ def search_result_view(request):
     # Render the HTML template with the context data
     return render(request, 'jobapp/result.html', context)
 
+# View to allow users to apply for a job
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employee
 def apply_job_view(request, id):
@@ -221,10 +234,12 @@ def apply_job_view(request, id):
             'id': id
         }))
 
+# View to display user-specific dashboard information
 @login_required(login_url=reverse_lazy('account:login'))
 def dashboard_view(request):
     """
-    View to display user-specific dashboard information.
+    View to display
+        user-specific dashboard information.
     """
 
     jobs = []
@@ -253,6 +268,7 @@ def dashboard_view(request):
 
     return render(request, 'jobapp/dashboard.html', context)
 
+# View to delete a job post
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def delete_job_view(request, id):
@@ -268,6 +284,7 @@ def delete_job_view(request, id):
 
     return redirect('jobapp:dashboard')
 
+# View to mark a job as complete
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def make_complete_job_view(request, id):
@@ -287,6 +304,7 @@ def make_complete_job_view(request, id):
             
     return redirect('jobapp:dashboard')
 
+# View to display all applicants for a job
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def all_applicants_view(request, id):
@@ -302,7 +320,7 @@ def all_applicants_view(request, id):
 
     return render(request, 'jobapp/all-applicants.html', context)
 
-
+# View to delete a bookmarked job
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employee
 def delete_bookmark_view(request, id):
@@ -318,6 +336,8 @@ def delete_bookmark_view(request, id):
 
     return redirect('jobapp:dashboard')
 
+
+# View to display details of an applicant
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def applicant_details_view(request, id):
@@ -333,6 +353,7 @@ def applicant_details_view(request, id):
 
     return render(request, 'jobapp/applicant-details.html', context)
 
+# View to bookmark a job
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employee
 def job_bookmark_view(request, id):
@@ -368,6 +389,7 @@ def job_bookmark_view(request, id):
             'id': id
         }))
 
+# View to handle job updates
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def job_edit_view(request, id=id):
@@ -392,17 +414,16 @@ def job_edit_view(request, id=id):
     }
 
     return render(request, 'jobapp/job-edit.html', context)
+
+# View to display the about us page
 def about_us_view(request):
     return render(request, 'jobapp/about_us.html')
+
+# View to display the terms and conditions page
 def terms_condition_view(request):
     return render(request, 'jobapp/terms-condition.html')
-from django.core.mail import send_mail
-from django.conf import settings
-from django.http import JsonResponse
-from django.http import HttpResponse
-from django.template.loader import render_to_string
 
-
+# View to handle the contact us form
 def contact_us_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -443,50 +464,7 @@ def contact_us_view(request):
     
     return render(request, 'jobapp/contact_us.html', {'form': form})
 
-
-# def contact_us_view(request):
-#     if request.method == 'POST':
-#         form = ContactForm(request.POST)
-#         if form.is_valid():
-#             name = form.cleaned_data['name']
-#             email = form.cleaned_data['email']
-#             subject = form.cleaned_data['subject']
-#             message = form.cleaned_data['message']
-
-#             # Send email to admin
-#             try:
-#                 send_mail(
-#                     subject,
-#                     f'Name: {name}\nEmail: {email}\nMessage: {message}',
-#                     settings.EMAIL_HOST_USER,
-#                     ['remotejob007@gmail.com'],  # Replace with the recipient's email address
-#                     fail_silently=False,
-#                 )
-#                 # Send confirmation email to the user
-#                 send_mail(
-#                     'Message Received - Thank you for contacting us',
-#                     'We have received your message and will get back to you shortly.',
-#                     settings.EMAIL_HOST_USER,
-#                     [email],  # Use the email provided by the user in the form
-#                     fail_silently=False,
-#                 )
-#                 messages.success(request, 'Contact form has been successfully sent.')
-#             except Exception as e:
-#                 messages.error(request, f'An error occurred: {str(e)}')
-#         else:
-#             messages.error(request, 'Fill out the form completely.')
-#     else:
-#         form = ContactForm()  # Create an empty form if the request method is GET
-    
-#     return render(request, 'jobapp/contact_us.html', {'form': form})
- 
-# views.py
-
-import json
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
-from django.http import JsonResponse
-
+# View to send email based on button type (select or reject)
 def send_email(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -518,4 +496,3 @@ def send_email(request):
         return JsonResponse(response_data)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-
