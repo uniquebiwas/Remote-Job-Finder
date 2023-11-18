@@ -134,3 +134,23 @@ def user_logOut(request):
     auth.logout(request)
     messages.success(request, 'You are Successfully logged out')
     return redirect('account:login')
+
+# views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ChangePasswordForm
+from django.contrib import messages
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('account:login')
+        
+    else:
+        form = ChangePasswordForm(user=request.user)
+
+    return render(request, 'account/change_password.html', {'form': form})
