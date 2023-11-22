@@ -12,12 +12,6 @@ media
 # Ignore .env files
 .env
 
-# Ignore Python __pycache__ directories
-__pycache__/
-
-account/__pycache__/
-
-
 # If you are using PyCharm # 
 # User-specific stuff
 .idea/**/workspace.xml
