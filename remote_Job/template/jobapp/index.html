@@ -134,7 +134,7 @@
           impedit.</p>
       </div>
       <div class="col-md-3 ml-auto">
-        <a href="{% url 'jobapp:create-job' %}" class="btn btn-warning btn-block btn-lg">Post Your Job</a>
+        <a href="{% url 'jobapp:create-job' %}" class="btn btn-primary btn-lg btn-block text-white btn-search">Post Your Job</a>
       </div>
     </div>
     {% elif request.user.role == "employee" %}
@@ -145,7 +145,7 @@
           impedit.</p>
       </div>
       <div class="col-md-3 ml-auto">
-        <a href="{% url 'jobapp:job-list' %}" class="btn btn-warning btn-block btn-lg">Job List</a>
+        <a href="{% url 'jobapp:job-list' %}" class="btn btn-primary btn-lg btn-block text-white btn-search">Job List</a>
       </div>
     </div>
     {% else %}

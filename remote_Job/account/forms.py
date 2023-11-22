@@ -226,3 +226,33 @@ class ChangePasswordForm(PasswordChangeForm):
                 self.add_error('old_password', 'The old password is incorrect.')
 
         return cleaned_data
+
+# forms.py
+
+from django import forms
+from django.contrib.auth.forms import SetPasswordForm
+
+class CustomPasswordResetConfirmForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        strip=False,
+        help_text="Enter your new password.",
+    )
+    
+    new_password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        strip=False,
+        help_text="Enter the same password as before, for verification.",
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("new_password1")
+        password2 = cleaned_data.get("new_password2")
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("The passwords do not match.")
+
+        return cleaned_data
