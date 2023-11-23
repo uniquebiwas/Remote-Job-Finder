@@ -50,6 +50,15 @@
       </div>
       {% endfor %}
     </div>
+    {% if no_results %}
+        <h2>No result found..!!!</h2>
+    {% else %}
+        <!-- Display your search results here -->
+        {% for job in page_obj %}
+            <!-- Display job details -->
+        {% endfor %}
+        <!-- Display pagination links -->
+    {% endif %}
 
     
     {% include 'jobapp/paginator.html' %}
