@@ -11,6 +11,8 @@ media
 
 # Ignore .env files
 .env
+__pycache__
+.__pycache__
 
 # If you are using PyCharm # 
 # User-specific stuff

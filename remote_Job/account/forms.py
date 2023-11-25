@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
 # Import User model from account.models
 from account.models import User
@@ -182,7 +184,6 @@ class ForgotPasswordForm(forms.Form):
         widget=forms.EmailInput(attrs={'placeholder': 'Enter your Email', 'autocomplete': 'email'}),
         # Email input field with placeholder and autocomplete attribute
     )
-from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 
 # Customized password reset form, based on Django's BasePasswordResetForm
 class PasswordResetForm(BasePasswordResetForm):
@@ -227,10 +228,6 @@ class ChangePasswordForm(PasswordChangeForm):
 
         return cleaned_data
 
-# forms.py
-
-from django import forms
-from django.contrib.auth.forms import SetPasswordForm
 
 class CustomPasswordResetConfirmForm(SetPasswordForm):
     new_password1 = forms.CharField(

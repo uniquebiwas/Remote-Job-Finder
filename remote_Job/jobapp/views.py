@@ -161,6 +161,7 @@ def single_job_view(request, id):
     return render(request, 'jobapp/job-single.html', context)
 
 # View to search for jobs with multiple fields
+
 def search_result_view(request):
     """
     View to search for jobs with multiple fields.
@@ -191,10 +192,15 @@ def search_result_view(request):
     paginator = Paginator(job_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
+    # Check if there are no results
+    no_results = not job_list.exists()
+
     context = {
         'page_obj': page_obj,
+        'no_results': no_results,  # Add this flag to the context
     }
-    
+
     # Render the HTML template with the context data
     return render(request, 'jobapp/result.html', context)
 
