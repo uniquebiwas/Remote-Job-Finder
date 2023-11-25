@@ -8,6 +8,7 @@ media
 
 # Backup files # 
 *.bak 
+*.pyc 
 
 # Ignore .env files
 .env
