@@ -80,20 +80,37 @@ def employer_registration(request):
 # Define a view function for editing employee profile
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employee
-def employee_edit_profile(request, id=id):
-    """
-    Handle the process of updating employee profile information.
+# def employee_edit_profile(request, id=id):
+#     """
+#     Handle the process of updating employee profile information.
 
-    If the request method is POST, validate the form data and update the employee profile.
-    Display success message and redirect to the updated profile page.
-    If the request method is GET, display the filled employee profile edit form.
-    """
+#     If the request method is POST, validate the form data and update the employee profile.
+#     Display success message and redirect to the updated profile page.
+#     If the request method is GET, display the filled employee profile edit form.
+#     """
+#     user = get_object_or_404(User, id=id)
+#     form = EmployeeProfileEditForm(request.POST or None, instance=user)
+#     if form.is_valid():
+#         form = form.save()
+#         messages.success(request, 'Your Profile Was Successfully Updated!')
+#         return redirect(reverse("account:edit-profile", kwargs={'id': form.id}))
+
+#     context = {
+#         'form': form
+#     }
+
+#     return render(request, 'account/employee-edit-profile.html', context)
+def employee_edit_profile(request, id):
     user = get_object_or_404(User, id=id)
-    form = EmployeeProfileEditForm(request.POST or None, instance=user)
-    if form.is_valid():
-        form = form.save()
-        messages.success(request, 'Your Profile Was Successfully Updated!')
-        return redirect(reverse("account:edit-profile", kwargs={'id': form.id}))
+
+    if request.method == 'POST':
+        form = EmployeeProfileEditForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your Profile Was Successfully Updated!')
+            return redirect(reverse("account:edit-profile", kwargs={'id': user.id}))
+    else:
+        form = EmployeeProfileEditForm(instance=user)
 
     context = {
         'form': form

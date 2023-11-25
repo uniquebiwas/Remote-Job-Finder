@@ -17,10 +17,11 @@ class EmployeeRegistrationForm(UserCreationForm):
                                    widget=forms.TextInput(attrs={'placeholder': 'Enter Phone Number'}))
     pdf_document = forms.FileField(label='Upload your CV (PDF)', required=True,
                                    widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your CV'}))
+    photo = forms.ImageField(label='Upload a Profile', required=False)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'pdf_document', 'password1', 'password2', 'gender']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'photo','pdf_document', 'password1', 'password2', 'gender']
 
     # Customizing form field labels and placeholders
     def __init__(self, *args, **kwargs):
@@ -43,6 +44,7 @@ class EmployeeRegistrationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Enter Password'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password'})
         self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
+        # self.fields['photo'].widget.attrs.update({'placeholder': 'Enter Photo'})
 
     # Custom save method to assign role and handle file validation
     def save(self, commit=True):
@@ -156,18 +158,19 @@ class UserLoginForm(forms.Form):
 
 # Form for editing employee profile
 class EmployeeProfileEditForm(forms.ModelForm):
-
+    photo = forms.ImageField(label='Change Profile Picture')
     def __init__(self, *args, **kwargs):
         super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
+        
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Enter First Name'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
         self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
         # Uncomment the line below to add a placeholder for the PDF document field
-        # self.fields['pdf_document'].widget.attrs.update({'placeholder': 'Update Your CV (If you want to: )'})
+        self.fields['photo'].widget.attrs.update({'placeholder': 'Change Profile Picture'})
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "phone_number", "gender"]
+        fields = ['photo',"first_name", "last_name", "phone_number", "gender"]
 
         # Specify labels for form fields
         labels = {
@@ -175,6 +178,7 @@ class EmployeeProfileEditForm(forms.ModelForm):
             'last_name': 'Last Name',
             'phone_number': 'Phone Number',
             'gender': 'Gender',
+            'photo': 'Change Profile Picture',
         }
 
 # Custom form for initiating password reset process
