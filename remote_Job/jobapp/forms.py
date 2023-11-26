@@ -144,11 +144,7 @@ class JobEditForm(forms.ModelForm):
                 'placeholder': '$800 - $1200',
             }
         )
-        # self.fields['tags'].widget.attrs.update(
-        #     {
-        #         'placeholder': 'Use comma separated. eg: Python, JavaScript ',
-        #     }
-        # )                        
+                               
         self.fields['last_date'].widget.attrs.update(
             {
                 'placeholder': 'YYYY-MM-DD ',

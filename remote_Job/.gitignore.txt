@@ -1,4 +1,4 @@
-# Django #
+## Django ##
 *.log
 *.pot
 *.pyc
@@ -8,6 +8,7 @@ media
 
 # Backup files # 
 *.bak 
+*.pyc 
 
 # Ignore .env files
 .env

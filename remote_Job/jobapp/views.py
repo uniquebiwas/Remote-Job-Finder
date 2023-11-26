@@ -476,12 +476,14 @@ def send_email(request):
         data = json.loads(request.body)
         email = data.get('email')
         position = data.get('position')
+        company_name = data.get('company_name')
         button_type = data.get('buttonType')
 
         # Send email based on button type (select or reject)
         subject = 'Application Status'
         template_name = 'jobapp/job_mail.html'
         context = {
+            'company_name': company_name,
             'position': position,
             'buttonType': button_type,
         }
@@ -502,3 +504,4 @@ def send_email(request):
         return JsonResponse(response_data)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
