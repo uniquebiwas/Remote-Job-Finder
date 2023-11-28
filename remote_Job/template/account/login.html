@@ -20,61 +20,71 @@
 <section class="site-section">
   <div class="container">
     <div class="row">
-
       <div class="col-lg-10 mb-5">
-
         {% include 'messages.html' %}
-
         {% if form.errors %}
-        {% for field in form %}
-        {% for error in field.errors %}
-        <div class="alert alert-danger alert-dismissable">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-        <div class="alert alert-danger alert-dismissable">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{ error|escape }}</strong>
+              </div>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissable">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+              <strong>{{ error|escape }}</strong>
+            </div>
+          {% endfor %}
         {% endif %}
-        <form method="POST" action="#" class="p-4 border rounded">
+        <form method="POST" action="#" class="p-4 border rounded" id="login-form">
           {% csrf_token %}
           {% for field in form %}
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
               {% if field.name == 'remember_me' %}
-              <div class="form-check">
-                {{ field }}
-                <label class="form-check-label" for="id_{{ field.name }}">Remember Me</label>
-              </div>
+                <div class="form-check">
+                  {{ field }}
+                  <label class="form-check-label" for="id_{{ field.name }}">Remember Me</label>
+                </div>
               {% else %}
-              <label class="text-black" for="id_{{ field.name }}">{{ field.label }}</label>
-              <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
-                id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
+                <label class="text-black" for="id_{{ field.name }}">{{ field.label }}</label>
+                <div class="input-group">
+                  <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
+                        id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
+                  {% if field.field.widget.input_type == 'password' %}
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_{{ field.name }}')">
+                        <span class="oi oi-eye"></span> <!-- Bootstrap 4 Eye Icon -->
+                      </button>
+                    </div>
+                  {% endif %}
+                </div>
               {% endif %}
             </div>
           </div>
-          {% endfor %}
+        {% endfor %}
           <div class="text-center mt-4">
-         </div>
+          </div>
           <div class="row form-group">
             <div class="col-md-12">
               <input type="submit" value="Sign In" class="btn px-4 btn-primary text-white">
             </div>
           </div>
           <p><a href="{% url "account:password_reset" %}">Forgot your password?</a></p>
-
         </form>
-        
-        
-
+      </div>
     </div>
   </div>
 </section>
 
+<script>
+  function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const fieldType = passwordField.type === 'password' ? 'text' : 'password';
+    passwordField.type = fieldType;
+  }
+</script>
 
 {% endblock %}

@@ -11,6 +11,7 @@ media
 *.pyc 
 
 # Ignore .env files
+env
 .env
 __pycache__
 .__pycache__
