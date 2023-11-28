@@ -41,7 +41,7 @@ class EmployeeRegistrationForm(UserCreationForm):
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Enter First Name'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
         self.fields['email'].widget.attrs.update({'placeholder': 'Enter Email'})
-        self.fields['password1'].widget.attrs.update({'placeholder': 'Enter Password'})
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Enter Password (at least 8 characters)'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password'})
         self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
         # self.fields['photo'].widget.attrs.update({'placeholder': 'Enter Photo'})
@@ -113,7 +113,7 @@ class UserLoginForm(forms.Form):
     )
     password = forms.CharField(
         strip=False,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'password-toggle'}),
     )
     remember_me = forms.BooleanField(
         required=False,
@@ -146,7 +146,7 @@ class UserLoginForm(forms.Form):
                 raise forms.ValidationError("User is not Active.")
 
         if not remember_me:
-            # If "Remember Me" is not checked, set session expiry to 0 (session ends when browser is closed)
+            # If "Remember Me" is not checked, set session expiry to 0 (session ends when the browser is closed)
             self.request.session.set_expiry(0)
 
         return super(UserLoginForm, self).clean(*args, **kwargs)
@@ -159,18 +159,21 @@ class UserLoginForm(forms.Form):
 # Form for editing employee profile
 class EmployeeProfileEditForm(forms.ModelForm):
     photo = forms.ImageField(label='Change Profile Picture')
+    pdf_document = forms.FileField(label='Want to change CV (PDF)', required=False,
+                                   widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your CV'}))
     def __init__(self, *args, **kwargs):
         super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
         
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Enter First Name'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
         self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
-        # Uncomment the line below to add a placeholder for the PDF document field
+
         self.fields['photo'].widget.attrs.update({'placeholder': 'Change Profile Picture'})
+        self.fields['pdf_document'].widget.attrs.update({'placeholder': 'Want to Change PDF Document'})
 
     class Meta:
         model = User
-        fields = ['photo',"first_name", "last_name", "phone_number", "gender"]
+        fields = ['photo',"first_name", "last_name", "phone_number", "gender","pdf_document"]
 
         # Specify labels for form fields
         labels = {
