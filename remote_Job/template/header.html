@@ -1,10 +1,14 @@
+<!-- Add these links to include SweetAlert2 CSS and JS in your HTML file -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10"> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<!-- Your HTML code -->
 <div id="overlayer"></div>
 <div class="loader">
   <div class="spinner-border text-primary" role="status">
     <span class="sr-only">Loading...</span>
   </div>
 </div>
-
 
 <div class="site-wrap">
 
@@ -17,12 +21,11 @@
     <div class="site-mobile-menu-body"></div>
   </div> <!-- .site-mobile-menu -->
 
-
   <!-- NAVBAR -->
   <header class="site-navbar mt-3">
     <div class="container-fluid">
       <div class="row align-items-center">
-        <div class="site-logo col-6"><a href="{% url 'jobapp:home' %}">Job Finder</a></div>
+        <div class="site-logo col-6"><a href="{% url 'jobapp:home' %}">Remote Job Finder</a></div>
         <nav class="mx-auto site-navigation">
           <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
             <li><a href="{% url 'jobapp:home' %}" class="nav-link">Home</a></li>
@@ -41,36 +44,34 @@
                   class="js-clone-nav pr-3 btn btn-outline-white border-width-2 d-none d-lg-inline-block"><span
                     class="mr-2 icon-add"></span>Publish Job</a>
 
-                  
-                    <li class="pr-3 has-children">
-                      <a>Dashboard</a> 
-                      <ul class="dropdown">
-                        <li><a href="{% url 'jobapp:dashboard' %}">View Jobs</a></li>
-                        <li><a href="{% url 'account:change_password' %}">Change Password</a></li>
-                        <li><a href="{% url 'account:logout' %}">Logout</a></li>
-                      </ul>
-                    </li>
+                <li class="pr-3 has-children">
+                  <a>Dashboard</a> 
+                  <ul class="dropdown">
+                    <li><a>Welcome {{ user.first_name }}...!!!!</a></li> 
+                    <li><a href="{% url 'jobapp:dashboard' %}">View Jobs</a></li>
+                    <li><a href="{% url 'account:change_password' %}">Change Password</a></li>
+                    <li><a href="#" onclick="showLogoutAlert()">Logout</a></li>
+                  </ul>
+                </li>
 
                 {% elif user.is_authenticated %}
 
                 <li class="pr-3 has-children">
-                  <a>Profile</a>
+                  <a>{{ user.first_name }} {{ user.last_name }}</a>
                   <ul class="dropdown">
-                    <li><a href="{% url 'account:edit-profile' request.user.id %}">Edit Settings</a></li>
+                    <li><a href="{% url 'account:edit-profile' request.user.id %}">Edit Profile</a></li>
                   </ul>
                 </li>
 
                 <li class="pr-3 has-children">
                   <a>Dashboard</a> 
                   <ul class="dropdown">
+                    <!-- <li><a>Welcome {{ user.first_name }} {{ user.last_name }}...!!!</a></li> -->
                     <li><a href="{% url 'jobapp:dashboard' %}">JobBoard</a></li>
                     <li><a href="{% url 'account:change_password' %}">Change Password</a></li>
-                    <li><a href="{% url 'account:logout' %}">Logout</a></li>
+                    <li><a href="#" onclick="showLogoutAlert()">Logout</a></li>
                   </ul>
                 </li>
-                <!-- <a href="{% url 'account:logout' %}"
-                class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span
-                  class="mr-2 icon-lock_outline"></span>Log Out</a> -->
                 {% else %}
 
                 <li class="pr-3 has-children">
@@ -88,8 +89,30 @@
               </ul>
             </div>
 
-        <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3"><span
-            class="icon-menu h3 m-0 p-0 mt-2"></span></a>
+            <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3"><span
+              class="icon-menu h3 m-0 p-0 mt-2"></span></a>
+          </div>
+        </div>
       </div>
     </div>
   </header>
+
+  <!-- Add this script at the end of your HTML file or in a separate script file -->
+  <script>
+    function showLogoutAlert() {
+      Swal.fire({
+        title: 'Logout Confirmation',
+        text: 'Are you sure you want to log out?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, log me out!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "{% url 'account:logout' %}";
+        }
+      });
+    }
+
+  </script>

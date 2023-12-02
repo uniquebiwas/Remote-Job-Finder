@@ -96,7 +96,7 @@
 
               {% else %}
 
-              <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
+              <form id="applyForm" action="{% url 'jobapp:apply-job' job.id %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="job" value="{{ job.id }}">
 
@@ -167,7 +167,7 @@
           </div>
           {% else %}
           <div class="col-6">
-            <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
+            <form id="applyForm" action="{% url 'jobapp:apply-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
 
@@ -183,7 +183,7 @@
           </div>
           {% elif user.role == none %}
             <div class="col-6">
-              <form action="{% url 'jobapp:apply-job' job.id %}" method="POST">
+              <form id="applyForm" action="{% url 'jobapp:apply-job' job.id %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="job" value="{{ job.id }}">
 
@@ -284,5 +284,32 @@
 {% block extra_scripts %}
 <script src="{% static 'js/sweet-alert.js' %}"></script>
 <script src="{% static 'js/sweet-alert-ajax.js' %}"></script>
+<script>
+  // Assuming you have jQuery included
+
+  $(document).ready(function() {
+    $('#applyForm').submit(function(event) {
+      // Prevent the default form submission
+      event.preventDefault();
+
+      // Show SweetAlert confirmation
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "Your resume will be shared with the company. Do you want to proceed?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, apply!',
+        cancelButtonText: 'No, cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Continue with form submission
+          this.submit();
+        }
+      });
+    });
+  });
+</script>
 
 {% endblock %}
