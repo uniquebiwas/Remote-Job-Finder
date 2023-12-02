@@ -139,25 +139,31 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Show a success message to the user
-          alert('Email sent successfully! Candidate ' + (selectedButtonType === 'select' ? 'selected' : 'rejected') + '.');
-          // Close the modal after successful submission
-          $('#emailPositionModal').modal('hide');
-          // Reload the page after successful submission
-          window.location.reload();
-        } else {
+      // Show a success message to the user using SweetAlert
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: `Email sent successfully! Candidate ${selectedButtonType === 'select' ? 'selected' : 'rejected'}.`,
+      })
+      .then(() => {
+        // Close the modal after successful submission
+        $('#emailPositionModal').modal('hide');
+        // Reload the page after successful submission
+        window.location.reload();
+      });
+    } else {
           // Show an error message to the user
-          alert('Failed to send email. Please try again.');
+          Swal.fire({icon:'warning', text: 'Failed to send email. Please try again.'});
         }
       })
       .catch(error => {
         console.error('Error:', error);
         // Show an error message to the user
-        alert('Failed to send email. Please try again.');
+        Swal.fire({icon:'warning', text: 'Failed to send email. Please try again.'});
       });
     } else {
       // Show a validation error if any of the fields are empty
-      alert("Button type, Email, and Position are required!");
+      Swal.fire( {icon:'warning', text:" Email, Position, and Company name are required!"});
     }
   }
 </script>
