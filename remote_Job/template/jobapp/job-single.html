@@ -64,7 +64,7 @@
                     class="icon-heart-o mr-2 text-danger"></span>Saved</span>
                 {% else %}
 
-                <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
+                <form id="saveForm" action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
                   {% csrf_token %}
                   <input type="hidden" name="job" value="{{ job.id }}">
                   <input type="submit" class="btn btn-block btn-light btn-md" value="Save Job" />
@@ -76,11 +76,11 @@
                                    
             {% comment %} {% else %}
 
-            <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
+            <form id="saveForm" action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
 
-              <input type="submit" class="btn btn-block btn-light btn-md" value="Save" />
+              <input type="submit" class="btn btn-block btn-light btn-md" value="Save Job" />
             </form> {% endcomment %}
 
             {% endif %}
@@ -130,15 +130,15 @@
             {% if user.is_authenticated and user.role == 'employee' %}
             {% is_job_already_saved job request.user as is_saved %}
             {% if is_saved %}
-            <span class="btn btn-block btn-light btn-md"><span class="icon-heart-o mr-2 text-danger"></span>Already
+            <!-- <span class="btn btn-block btn-light btn-md"><span class="icon-heart-o mr-2 text-danger"></span>Already
               Saved
-              Job</span>
+              Job</span> -->
             {% else %}
 
-            <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
+            <form id="saveForm" action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
-              <input type="submit" class="btn btn-block btn-light btn-md" value="Save" />
+              <!-- <input type="submit" class="btn btn-block btn-light btn-md" value="Save" /> -->
 
             </form>
 
@@ -149,11 +149,11 @@
                                    
            {% elif user.role == none %}
 
-            <form action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
+            <form id="saveForm" action="{% url 'jobapp:bookmark-job' job.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
 
-              <input type="submit" class="btn btn-block btn-light btn-md" value="Save" />
+              <!-- <input type="submit" class="btn btn-block btn-light btn-md" value="Save" /> -->
             </form>
 
             {% endif %}
@@ -163,7 +163,7 @@
           {% if is_applied %}
 
           <div class="col-6">
-            <span class="btn btn-block btn-danger btn-md">Already Applied</span>
+            <!-- <span class="btn btn-block btn-danger btn-md">Already Applied</span> -->
           </div>
           {% else %}
           <div class="col-6">
@@ -171,7 +171,7 @@
               {% csrf_token %}
               <input type="hidden" name="job" value="{{ job.id }}">
 
-              <input type="submit" class="btn btn-block btn-primary btn-md" value="Apply Now" />
+              <!-- <input type="submit" class="btn btn-block btn-primary btn-md" value="Apply Now" /> -->
             </form>
           </div>
           {% endif %}
@@ -187,7 +187,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="job" value="{{ job.id }}">
 
-                <input type="submit" class="btn btn-block btn-primary btn-md" value="Apply Now" />
+                <!-- <input type="submit" class="btn btn-block btn-primary btn-md" value="Apply Now" /> -->
               </form>
           </div> 
           {% endif %}
@@ -296,7 +296,7 @@
       Swal.fire({
         title: 'Are you sure?',
         text: "Your resume will be shared with the company. Do you want to proceed?",
-        icon: 'warning',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -306,6 +306,35 @@
         if (result.isConfirmed) {
           // Continue with form submission
           this.submit();
+        }
+      });
+    });
+    $('#saveForm').submit(function(event) {
+      // Prevent the default form submission
+      event.preventDefault();
+
+      // Show SweetAlert confirmation
+      let timerInterval;
+      Swal.fire({
+        title: "Saving Job...",
+        html: "Saving...!!! <b></b> milliseconds.",
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          this.submit();
+          console.log("I was closed by the timer");
         }
       });
     });

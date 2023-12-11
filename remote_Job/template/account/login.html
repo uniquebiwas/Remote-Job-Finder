@@ -38,41 +38,57 @@
             </div>
           {% endfor %}
         {% endif %}
-        <form method="POST" action="#" class="p-4 border rounded" id="login-form">
-          {% csrf_token %}
-          {% for field in form %}
-          <div class="row form-group">
-            <div class="col-md-12 mb-3 mb-md-0">
-              {% if field.name == 'remember_me' %}
-                <div class="form-check">
-                  {{ field }}
-                  <label class="form-check-label" for="id_{{ field.name }}">Remember Me</label>
-                </div>
-              {% else %}
-                <label class="text-black" for="id_{{ field.name }}">{{ field.label }}</label>
-                <div class="input-group">
-                  <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
+        <form method="POST" action="#" class="p-4 rounded-lg" id="login-form" style="background-color: #ffffff; position: relative;">
+          <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;"></div>
+          <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -2;"></div>
+          <div class="col-lg-12" style="background-color: #ffffff; position: relative;">
+            <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;"></div>
+            <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -2;"></div>
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="row form-group">
+                <div class="col-md-12 mb-3 mb-md-0">
+                  {% if field.name == 'remember_me' %}
+                    <div class="form-check">
+                      {{ field }}
+                      <label class="form-check-label text-black" for="id_{{ field.name }}">Remember Me</label>
+                    </div>
+                  {% else %}
+                    <label class="text-black" for="id_{{ field.name }}">{{ field.label }}</label>
+                    <div class="input-group">
+                      <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
                         id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-                  {% if field.field.widget.input_type == 'password' %}
-                    <div class="input-group-append">
-                      <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_{{ field.name }}')">
-                        <span class="oi oi-eye"></span> <!-- Bootstrap 4 Eye Icon -->
-                      </button>
+                      {% if field.field.widget.input_type == 'password' %}
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_{{ field.name }}')">
+                            <span class="oi oi-eye"></span> <!-- Bootstrap 4 Eye Icon -->
+                          </button>
+                        </div>
+                      {% endif %}
                     </div>
                   {% endif %}
+                  
                 </div>
-              {% endif %}
+              </div>
+            {% endfor %}
+            <div class="row form-group">
+              <div class="col-md-12">
+                <input type="submit" value="Sign In" class="btn px-4 btn-primary text-white">
+              </div>
+            </div>
+            <p><a href="{% url 'account:password_reset' %}" class="text-blue">Forgot your password?</a></p>
+            <div class="text-center mt-4">
+              <ul class="list-unstyled">
+                <li class="dropdown">
+                  Don't have an account? <a data-toggle="dropdown" href="#" class="text-blue">Sign up</a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{% url 'account:employer-registration' %}" class="text-blue p-md-2">Employer</a></li>
+                    <li><a href="{% url 'account:employee-registration' %}" class="text-blue p-md-2">Employee</a></li>
+                  </ul>
+                </li>
+              </ul>
             </div>
           </div>
-        {% endfor %}
-          <div class="text-center mt-4">
-          </div>
-          <div class="row form-group">
-            <div class="col-md-12">
-              <input type="submit" value="Sign In" class="btn px-4 btn-primary text-white">
-            </div>
-          </div>
-          <p><a href="{% url "account:password_reset" %}">Forgot your password?</a></p>
         </form>
       </div>
     </div>
