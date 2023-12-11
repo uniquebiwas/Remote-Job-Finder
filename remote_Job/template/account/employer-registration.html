@@ -42,37 +42,43 @@
         {% endfor %}
         {% endif %}
         
-        <form method="POST" action="" enctype="multipart/form-data" class="p-4 border rounded">
-          {% csrf_token %}
-          {% for field in form %}
-              <div class="row form-group">
-                  <div class="col-md-12 mb-3 mb-md-0">
-                      <label class="text-black" for="id_{{ field.name }}">
-                          {{ field.label }}
-                          {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
-                      </label>
-                      {% if field.field.widget.input_type == 'password' %}
-                          <div class="input-group">
-                              <input type="password" class="form-control" name="{{ field.name }}"
-                                  id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-                              <div class="input-group-append">
-                                  <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_{{ field.name }}')">
-                                      <span class="oi oi-eye"></span>
-                                  </button>
-                              </div>
-                          </div>
-                      {% else %}
-                          <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
-                              id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-                      {% endif %}
-                  </div>
-              </div>
-          {% endfor %}
-          <div class="row form-group">
-              <div class="col-md-12">
-                  <input type="submit" value="Sign Up" class="btn px-4 btn-primary text-white">
-              </div>
-          </div>
+        <form method="POST" action="" enctype="multipart/form-data" class="p-4 rounded-lg" id="login-form" style="background-color: #ffffff; position: relative;">
+          <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;"></div>
+          <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -2;"></div>
+          <div class="col-lg-12" style="background-color: #ffffff; position: relative;">
+            <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;"></div>
+            <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -2;"></div>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="row form-group">
+                    <div class="col-md-12 mb-3 mb-md-0">
+                        <label class="text-black" for="id_{{ field.name }}">
+                            {{ field.label }}
+                            {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+                        {% if field.field.widget.input_type == 'password' %}
+                            <div class="input-group">
+                                <input type="password" class="form-control" name="{{ field.name }}"
+                                    id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_{{ field.name }}')">
+                                        <span class="oi oi-eye"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        {% else %}
+                            <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
+                                id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="row form-group">
+                <div class="col-md-12">
+                    <input type="submit" value="Sign Up" class="btn px-4 btn-primary text-white">
+                </div>
+            </div>
+          </div>  
       </form>
       
       </div>

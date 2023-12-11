@@ -2,11 +2,11 @@
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10"> -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-<!-- Your HTML code -->
+
 <div id="overlayer"></div>
 <div class="loader">
   <div class="spinner-border text-primary" role="status">
-    <span class="sr-only">Loading...</span>
+    <span class="sr-only" >Loading...</span>
   </div>
 </div>
 
@@ -48,7 +48,7 @@
                   <a>Dashboard</a> 
                   <ul class="dropdown">
                     <li><a>Welcome {{ user.first_name }}...!!!!</a></li> 
-                    <li><a href="{% url 'jobapp:dashboard' %}">View Jobs</a></li>
+                    <li><a href="{% url 'jobapp:dashboard' %}">My Jobs</a></li>
                     <li><a href="{% url 'account:change_password' %}">Change Password</a></li>
                     <li><a href="#" onclick="showLogoutAlert()">Logout</a></li>
                   </ul>
