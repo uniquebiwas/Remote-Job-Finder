@@ -75,13 +75,14 @@
                                 <div class="input-group">
                                     <input type="password" class="form-control" name="{{ field.name }}"
                                           id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('id_{{ field.name }}')">
-                                            <span class="oi oi-eye"></span>
-                                        </button>
-                                    </div>
+                                          <div class="input-group-append">
+                                            <button type="button" class="btn btn-outline-eye" onclick="togglePassword('id_{{ field.name }}')">
+                                              <i class="fa-solid fa-eye fa-lg" id="eyeIcon" style="color: #000000;"></i> 
+                                            </button> 
+                                          </div>
                                 </div>
                             {% else %}
+                            
                                 <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
                                       id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
                             {% endif %}
@@ -103,14 +104,22 @@
 </section>
 
 <script>
-    function togglePassword(inputId) {
-        var passwordInput = document.getElementById(inputId);
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-        } else {
-            passwordInput.type = "password";
-        }
-    }
+  function togglePassword(fieldId) {
+    var eyeIcon = document.getElementById('eyeIcon');
+
+    // Check the current color
+    var currentColor = eyeIcon.style.color;
+
+    // Toggle color
+    // if (currentColor === 'blue') {
+    //   eyeIcon.style.color = '#000000'; // Change back to black
+    // } else {
+    //   eyeIcon.style.color = 'blue'; // Change to purple
+    // }
+    const passwordField = document.getElementById(fieldId);
+    const fieldType = passwordField.type === 'password' ? 'text' : 'password';
+    passwordField.type = fieldType;
+  }
 </script>
 
 {% endblock %}

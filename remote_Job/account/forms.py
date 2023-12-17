@@ -161,6 +161,7 @@ class EmployeeProfileEditForm(forms.ModelForm):
     photo = forms.ImageField(label='Change Profile Picture')
     pdf_document = forms.FileField(label='Want to change CV (PDF)', required=False,
                                    widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your CV'}))
+  
     def __init__(self, *args, **kwargs):
         super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
         
@@ -170,10 +171,15 @@ class EmployeeProfileEditForm(forms.ModelForm):
 
         self.fields['photo'].widget.attrs.update({'placeholder': 'Change Profile Picture'})
         self.fields['pdf_document'].widget.attrs.update({'placeholder': 'Want to Change PDF Document'})
+    
+
+       
+
 
     class Meta:
         model = User
         fields = ['photo',"first_name", "last_name", "phone_number", "gender","pdf_document"]
+
 
         # Specify labels for form fields
         labels = {

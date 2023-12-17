@@ -56,14 +56,14 @@
             <h2>Resume:</h2>
             {% if applicant.pdf_document %}
                 <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <a href="{{ applicant.pdf_document.url }}" target="_blank" class="btn btn-primary btn-block">
-                        <i class="fas fa-eye"></i> Preview PDF
+                  <div class="col-md-6 mt-2 ">
+                    <a href="{{ applicant.pdf_document.url }}" target="_blank" >
+                      <i class="fa-regular fa-eye fa-beat fa-2xl ml-4" style="color: #000000;"></i>
                     </a>
                 </div>
-                <div class="col-md-6">
-                    <a href="{{ applicant.pdf_document.url }}" download="resume.pdf" class="btn btn-success btn-block">
-                        <i class="fas fa-download"></i> Download PDF
+                <div class="col-md-6 mt-2">
+                    <a href="{{ applicant.pdf_document.url }}" download="resume.pdf" >
+                      <i class="fa-sharp fa-solid fa-download fa-bounce fa-2xl" style="color: #000000;"></i>
                     </a>
                 </div>
                 

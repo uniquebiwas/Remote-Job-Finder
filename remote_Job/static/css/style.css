@@ -574,7 +574,7 @@ h1, h2, h3, h4 {
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgb(101 0 97 / 90%);
+      background: rgba(80, 5, 88, 0.9);
       z-index: 1; }
     .bg-image.overlay-primary > .container {
       position: relative;
@@ -928,6 +928,15 @@ h1, h2, h3, h4 {
   .btn.btn-outline-white:hover {
     background: #fff;
     color: #000; }
+
+.btn.btn-outline-eye {
+  background: transparent;
+    border-width: 1px solid #9a969a;
+    border-color: #9a969a;
+    color: #fff; }
+    .btn.btn-outline-white:hover {
+      background: #fff;
+      color: #000; }
 
 .btn.btn-outline-primary {
   color: #9c0d94; }
@@ -1349,7 +1358,7 @@ h1, h2, h3, h4 {
   width: 40px;
   height: 40px;
   position: relative;
-  background: #9c0d94;
+  background: #0417a9;
   border-radius: 50%;
   text-decoration: none !important; }
   .footer-social a > span, .social a > span {
@@ -1363,10 +1372,10 @@ h1, h2, h3, h4 {
   .footer-social a:hover, .social a:hover {
     background: #fff; }
     .footer-social a:hover span, .social a:hover span {
-      color: #9c0d94; }
+      color: #09a219; }
 
 .social a:hover {
-  background: #343a40; }
+  background: #09a219; }
   .social a:hover span {
     color: #fff; }
 
@@ -1703,3 +1712,7 @@ h1, h2, h3, h4 {
 .django-ckeditor-widget {
     width: 100% ;
 }
+
+
+
+

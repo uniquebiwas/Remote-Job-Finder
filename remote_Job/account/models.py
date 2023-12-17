@@ -25,6 +25,7 @@ class User(AbstractUser):
 
     phone_number = models.CharField(max_length=10, null=True, blank=True)  # Store phone number as a string
     pdf_document = models.FileField(upload_to='pdf_documents/')
+  
     photo=models.ImageField(upload_to='images',null=True, blank=True, default='images/default_image.png')
 
 
