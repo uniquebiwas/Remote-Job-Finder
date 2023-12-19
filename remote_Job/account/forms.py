@@ -117,7 +117,7 @@ class UserLoginForm(forms.Form):
     )
     remember_me = forms.BooleanField(
         required=False,
-        initial=True,
+        initial=False,
         widget=forms.CheckboxInput(),
     )
 
@@ -158,7 +158,8 @@ class UserLoginForm(forms.Form):
 
 # Form for editing employee profile
 class EmployeeProfileEditForm(forms.ModelForm):
-    photo = forms.ImageField(label='Change Profile Picture')
+    photo = forms.ImageField(label='Change Profile Picture',)
+    
     pdf_document = forms.FileField(label='Want to change CV (PDF)', required=False,
                                    widget=forms.ClearableFileInput(attrs={'placeholder': 'Upload Your CV'}))
   
@@ -169,12 +170,8 @@ class EmployeeProfileEditForm(forms.ModelForm):
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
         self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
 
-        self.fields['photo'].widget.attrs.update({'placeholder': 'Change Profile Picture'})
-        self.fields['pdf_document'].widget.attrs.update({'placeholder': 'Want to Change PDF Document'})
-    
-
-       
-
+        # self.fields['photo'].widget.attrs.update({'placeholder': 'Change Profile Picture'})
+        # self.fields['pdf_document'].widget.attrs.update({'placeholder': 'Want to Change PDF Document'})
 
     class Meta:
         model = User
@@ -187,7 +184,7 @@ class EmployeeProfileEditForm(forms.ModelForm):
             'last_name': 'Last Name',
             'phone_number': 'Phone Number',
             'gender': 'Gender',
-            'photo': 'Change Profile Picture',
+            # 'photo': 'Change Profile Picture',
         }
 
 # Custom form for initiating password reset process
