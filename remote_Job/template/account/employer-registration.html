@@ -62,7 +62,7 @@
                                     id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
                                     <div class="input-group-append">
                                       <button type="button" class="btn btn-outline-eye" onclick="togglePassword('id_{{ field.name }}')">
-                                        <i class="fa-solid fa-eye fa-lg" id="eyeIcon" style="color: #000000;"></i> 
+                                        <i class="fa-solid fa-eye fa-lg" id="eyeIcon" style="color: #4a4646;"></i> 
                                       </button> 
                                     </div>
                             </div>
@@ -93,12 +93,6 @@
     // Check the current color
     var currentColor = eyeIcon.style.color;
 
-    // // Toggle color
-    // if (currentColor === 'blue') {
-    //   eyeIcon.style.color = '#000000'; // Change back to black
-    // } else {
-    //   eyeIcon.style.color = 'blue'; // Change to purple
-    // }
     const passwordField = document.getElementById(fieldId);
     const fieldType = passwordField.type === 'password' ? 'text' : 'password';
     passwordField.type = fieldType;

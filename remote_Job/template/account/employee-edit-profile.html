@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
+<style>
+  .camera-icon {
+    cursor: pointer;
+    position: absolute;
+    bottom: 10px;
+    font-size: 24px;
+    color: #551162; /* Change color as needed */
+  }
+</style>
 <!-- HOME -->
 <section class="section-hero overlay inner-page bg-image"
   style="background-image: url('{% static 'images/bgrr.jpg' %}');" id="home-section">
@@ -50,9 +58,14 @@
             <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;"></div>
             <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -2;"></div>
             {% csrf_token %}
-            <span class="text-primary d-block mb-6" style="text-align: center; object-fit: cover;">
-              <img src="{{ form.instance.photo.url }}" alt="Profile Picture" style="border-radius: 50%;" width="300" height="300">
-          </span>
+            <div style="position: relative;">
+              <span class="text-primary d-block mb-6" style="text-align: center; object-fit: cover; position: relative;">
+                <img src="{{ form.instance.photo.url }}" alt="Profile Picture" style="border-radius: 50%; object-fit: cover;" width="300" height="300">
+                <!-- Camera icon to trigger file input -->
+                <i class="fas fa-camera-retro camera-icon" id="cameraIcon"></i>
+                <i class=></i>
+              </span>
+            </div>
                 
             {% for field in form %}
             {% if field.name == 'gender' %}
@@ -81,14 +94,25 @@
                   placeholder="{{ field.field.widget.attrs.placeholder }}">
               </div>
             </div>
+            {% if field.name == 'pdf_document' %}
+                      
+                                    <div class="input-group-append">
+                                      <a href="{{ user.pdf_document.url }}" target="_blank" class="btn btn-outline-secondary text-black">
+                                  <i class="fa fa-eye"></i> 
+                              </a>
+                                    </div>
+                            
+                        
+                        {% endif %}
 
             {% endif %}
             {% endfor %}
             <div class="row form-group">
               <div class="col-md-6 mb-3">
-                <a href="{{ user.pdf_document.url }}" target="_blank" class="btn px-4 btn-primary text-white">
-                    <i class="oi oi-eye"></i> 
-                </a>
+          
+                
+                      
+                
             </div>
               <div class="col-md-12">
                 <input type="submit" value="Update" class="btn px-4 btn-primary text-white">
@@ -101,6 +125,12 @@
     </div>
   </div>
 </section>
-
+<script>
+  // JavaScript to trigger file input when camera icon is clicked
+  document.getElementById('cameraIcon').addEventListener('click', function() {
+    // Assuming your file input has the id 'id_photo'
+    document.getElementById('id_photo').click();
+  });
+</script>
 
 {% endblock %}
