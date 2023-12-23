@@ -7,7 +7,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from .forms import ChangePasswordForm
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-
+from django.contrib.auth.tokens import default_token_generator
+from account.models import User  # Import the custom User model
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import login
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
 # Import necessary forms and custom permissions
 from account.forms import *
 from jobapp.permission import user_is_employee
@@ -25,22 +35,35 @@ def get_success_url(request):
     else:
         return reverse('jobapp:home')
 
+
 # Define a view function for employee registration
 def employee_registration(request):
-    """
-    Handle the process of employee registration form submission.
-
-    If the request method is POST, validate the form data and create an employee profile.
-    Display success message and redirect to the login page.
-    If the request method is GET, display an empty employee registration form.
-    """
     if request.method == 'POST':
-        form = EmployeeRegistrationForm(request.POST, request.FILES)  # Ensure request.FILES is passed
+        form = EmployeeRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
-            user.pdf_document = request.FILES.get('pdf_document')  # Use get() to avoid KeyError
+            user.is_active = False  # Set the user as inactive until email confirmation
             user.save()
-            messages.success(request, 'Your Profile Was Successfully Created!')
+
+            # Determine the protocol based on the request
+            protocol = 'https' if request.is_secure() else 'http'
+
+            # Send email verification
+            current_site = get_current_site(request)
+            subject = 'Activate Your Account'
+            message = render_to_string('account/activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'protocol': protocol,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(subject, message, to=[to_email])
+            email.content_subtype = "html"
+            email.send()
+
+            messages.success(request, 'Please check your email to activate your account.')
             return redirect('account:login')
     else:
         form = EmployeeRegistrationForm()
@@ -64,9 +87,10 @@ def employer_registration(request):
         form = EmployerRegistrationForm(request.POST, request.FILES)  # Include request.FILES to handle file uploads
         if form.is_valid():
             employer = form.save(commit=False)
+            employer.is_active = False
             employer.pdf_document = request.FILES.get('pdf_document')  # Get uploaded PDF file
             employer.save()
-            messages.success(request, 'Your Profile Was Successfully Created!')
+            messages.success(request, 'Your profile was successfully created! Please wait for admin authentication.')
             return redirect('account:login')
     else:
         form = EmployerRegistrationForm()
@@ -80,26 +104,6 @@ def employer_registration(request):
 # Define a view function for editing employee profile
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employee
-# def employee_edit_profile(request, id=id):
-#     """
-#     Handle the process of updating employee profile information.
-
-#     If the request method is POST, validate the form data and update the employee profile.
-#     Display success message and redirect to the updated profile page.
-#     If the request method is GET, display the filled employee profile edit form.
-#     """
-#     user = get_object_or_404(User, id=id)
-#     form = EmployeeProfileEditForm(request.POST or None, instance=user)
-#     if form.is_valid():
-#         form = form.save()
-#         messages.success(request, 'Your Profile Was Successfully Updated!')
-#         return redirect(reverse("account:edit-profile", kwargs={'id': form.id}))
-
-#     context = {
-#         'form': form
-#     }
-
-#     return render(request, 'account/employee-edit-profile.html', context)
 def employee_edit_profile(request, id):
     user = get_object_or_404(User, id=id)
 
@@ -136,7 +140,7 @@ def user_logIn(request):
             return HttpResponseRedirect(get_success_url(request))
     else:
         form = UserLoginForm(request=request)  # Pass the request object to the form when creating an instance
-
+        
     context = {
         'form': form,
     }
@@ -177,6 +181,7 @@ def change_password(request):
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'account/password_reset_form.html'
     email_template_name = 'account/password_reset_email.html'
+    
     success_url = reverse_lazy('account:password_reset_done')
     
 
@@ -199,3 +204,19 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'account/password_reset_complete.html'
 
+
+def activate_user(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)  # Use the custom User model
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, "Your account has been activated. Please login.")
+        return redirect('account:login')  # Redirect to the login page
+    else:
+        messages.error(request, "Invalid Link. Please try again or contact support.")
+        return redirect('account:login') 

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <section class="home-section section-hero inner-page overlay bg-image"
+             style="background-image: url('{% static 'images/bgrr.jpg' %}');" id="home-section">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12">
+                    <div class="mb-5 text-center">
+                        <h1 class="text-white font-weight-bold">Login Authenticate</h1>
+                        <p>Find your dream jobs on our powerful career website.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mb-4">Login Authenticate</h2>
+             
+                    <p class="mb-5" align="justify">Congratulations! Your account has been successfully validated through the email authentication process.
+                        This additional layer of security helps protect your account and ensures a secure experience on our platform.
+                        It also provides a convenient way to recover your password if you ever forget it.
+                        If you have any further questions or need assistance, our support team is here to help.
+                        Thank you for choosing our platform! We're excited to have you on board. <br> <br>
+                    <a href="{% url 'account:login' %}" class="js-clone-nav btn btn-primary border-width-2 d-none d-lg-inline-block ov-fix">
+                        <span class="mr-2 icon-lock_outline"></span>Log In
+                    </a> now and explore everything our platform has to offer!
+                </p>
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

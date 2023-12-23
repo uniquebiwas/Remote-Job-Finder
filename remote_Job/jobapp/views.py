@@ -477,6 +477,7 @@ def send_email(request):
         email = data.get('email')
         position = data.get('position')
         company_name = data.get('company_name')
+        mero_name = data.get('mero_name')
         button_type = data.get('buttonType')
 
         # Send email based on button type (select or reject)
@@ -485,6 +486,7 @@ def send_email(request):
         context = {
             'company_name': company_name,
             'position': position,
+            'mero_name':mero_name,
             'buttonType': button_type,
         }
 

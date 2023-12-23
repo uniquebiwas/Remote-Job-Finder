@@ -17,7 +17,7 @@
 </section>
 
 <section class="site-section block__18514" id="next-section">
-  <div class="container">
+  <div class="container border rounded">
     <div class="row">
       <div class="col-lg-3">
         <div class="border p-3 rounded">
@@ -30,7 +30,7 @@
         </div>
       </div>
       
-      <div class="col-lg-5 border p-4 rounded text-center">
+      <div class="col-lg-6 border p-4 rounded text-center">
         <h1 style="font-size: x-large;">Applicant Details</h1>
 
 
@@ -52,31 +52,33 @@
     </div>
     
       <div class="col-lg-3 ">
-        <div class="border p-4 rounded">
+        <div class="border p-3 rounded">
             <h2>Resume:</h2>
-            {% if applicant.pdf_document %}
-                <div class="row">
-                  <div class="col-md-6 p-3">
+            <div class="d-flex">
+              {% if applicant.pdf_document %}
+                
+                  <span class="p-4">
                     <a href="{{ applicant.pdf_document.url }}" target="_blank" >
-                      <i class="fa-regular fa-eye fa-beat fa-2xl " style="color: #000000;"></i>
+                      <i class="fa fa-eye  fa-2xl " style="color: #312f2f;"></i>
                     </a>
                   
-                </div>
-                <div class="col-md-6  p-3">
+                  </span>
+                <span class="p-4">
                   <a href="{{ applicant.pdf_document.url }}" download="resume.pdf" >
-                    <i class="fa-sharp fa-solid fa-download fa-bounce fa-2xl " style="color: #000000;"></i>
+                    <i class="fa-sharp fa-solid fa-download fa-2xl " style="color: #312f2f;"></i>
                   </a> 
-                </div>
+                </span>
                 
             {% else %}
                 <p>No PDF Available</p>
             {% endif %}
+          </div>
         </div>
-    </div>
+      </div>
     
     
         
-    </div>
+  </div>
   </section>
   
 <!-- Modal -->
@@ -84,21 +86,24 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="emailPositionModalLabel">Enter Email and Position</h5>
+        <h5 class="modal-title" id="emailPositionModalLabel">Enter a Position</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <form id="emailPositionForm">
-    
+          <div class="form-group">
+            <label for="mero_name">Name:</label>
+            <input type="text" class="form-control" id="mero_name" value="{{ applicant.get_full_name }}" readonly>
+          </div>
           <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" value="{{ applicant.email }}" readonly>
           </div>
           <div class="form-group">
             <label for="company_name">Company Name:</label>
-            <input type="text" class="form-control" id="company_name" value="{{ user.first_name }} Company" readonly>
+            <input type="text" class="form-control" id="company_name" value="{{ user.first_name }}" readonly>
           </div>
           <div class="form-group">
             <label for="position">Position:</label>
@@ -123,9 +128,10 @@
     var email = document.getElementById("email").value;
     var position = document.getElementById("position").value;
     var company_name=document.getElementById("company_name").value;
+    var mero_name = document.getElementById("mero_name").value;
 
-  if (selectedButtonType && email && position && company_name) {
-      // Send email and position data to the backend
+  if (selectedButtonType && email && position && mero_name && company_name) {
+      // 
       fetch('/send-email/', {
         method: 'POST',
         headers: {
@@ -136,6 +142,7 @@
           email: email,
           position: position,
           company_name:company_name,
+          mero_name: mero_name,
           buttonType: selectedButtonType
         })
       })
@@ -144,9 +151,12 @@
         if (data.success) {
       // Show a success message to the user using SweetAlert
       Swal.fire({
-        icon: 'success',
+        position: "top-end",
+        icon: "success",
         title: 'Success!',
         text: `Email sent successfully! Candidate ${selectedButtonType === 'select' ? 'selected' : 'rejected'}.`,
+        showConfirmButton: false,
+        timer: 3500
       })
       .then(() => {
         // Close the modal after successful submission
@@ -166,7 +176,7 @@
       });
     } else {
       // Show a validation error if any of the fields are empty
-      Swal.fire( {icon:'error', text:" Email, Position, and Company name are required!"});
+      Swal.fire( {icon:'error', text:"Position is required!"});
     }
   }
 </script>
