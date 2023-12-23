@@ -1,13 +1,9 @@
 from django.urls import path
 from account import views
 from django.contrib.auth import views as auth_views
-from .views import change_password
-# from .forms import PasswordResetForm
-# from .forms import CustomPasswordResetForm
+# from .views import change_password
 from .views import CustomPasswordResetView, CustomPasswordResetDoneView, CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
-
-
-
+from .views import activate_user
 
 app_name = "account"
 
@@ -24,4 +20,6 @@ urlpatterns = [
     path('password_reset/done/', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('activate/<uidb64>/<token>/', activate_user, name='activate'),
+
 ]

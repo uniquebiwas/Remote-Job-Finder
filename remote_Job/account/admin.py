@@ -47,7 +47,7 @@ class UpdateUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-            'email', 'password', 'first_name', 'gender', 'phone_number','photo','pdf_document','role', 'last_name', 'is_active',
+            'email', 'password', 'first_name', 'phone_number','photo','pdf_document','role', 'last_name', 'is_active',
             'is_staff'
         )
 
@@ -64,7 +64,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_staff', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'gender','phone_number', 'photo','pdf_document','role', )}),
+        ('Personal info', {'fields': ('first_name', 'last_name','phone_number', 'photo','pdf_document','role', )}),
         ('Permissions', {'fields': ('is_active', 'is_staff')}),
     )
     add_fieldsets = (
@@ -73,7 +73,7 @@ class UserAdmin(BaseUserAdmin):
             {
                 'classes': ('wide',),
                 'fields': (
-                    'email', 'first_name', 'last_name', 'gender','phone_number', 'photo','pdf_document','role', 'password1',
+                    'email', 'first_name', 'last_name','phone_number', 'photo','pdf_document','role', 'password1',
                     'password2'
                 )
             }

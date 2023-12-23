@@ -143,8 +143,7 @@ class UserLoginForm(forms.Form):
                 raise forms.ValidationError("Password Does not Match.")
 
             if not user.is_active:
-                raise forms.ValidationError("User is not Active.")
-
+               raise forms.ValidationError("Your account is not yet active. Please wait for activation.")
         if not remember_me:
             # If "Remember Me" is not checked, set session expiry to 0 (session ends when the browser is closed)
             self.request.session.set_expiry(0)

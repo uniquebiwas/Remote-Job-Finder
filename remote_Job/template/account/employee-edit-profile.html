@@ -6,8 +6,9 @@
     cursor: pointer;
     position: absolute;
     bottom: 10px;
-    font-size: 24px;
-    color: #551162; /* Change color as needed */
+    right: 10px;
+    font-size: 30px;
+    color: #59595c; /* Change color as needed */
   }
 </style>
 <!-- HOME -->
@@ -31,7 +32,7 @@
     <div class="row">
       <div class="col-lg-12 mb-5">
 
-        <h2 class="mb-4 text-center">Update Profile</h2>
+        
         {% include 'messages.html' %}
 
         {% if form.errors %}
@@ -57,15 +58,15 @@
           <div class="col-lg-12" style="background-color: #ffffff; position: relative;">
             <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;"></div>
             <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -2;"></div>
+            <h2 class="mb-4 text-center">Update Profile</h2>
             {% csrf_token %}
-            <div style="position: relative;">
-              <span class="text-primary d-block mb-6" style="text-align: center; object-fit: cover; position: relative;">
-                <img src="{{ form.instance.photo.url }}" alt="Profile Picture" style="border-radius: 50%; object-fit: cover;" width="300" height="300">
-                <!-- Camera icon to trigger file input -->
-                <i class="fas fa-camera-retro camera-icon" id="cameraIcon"></i>
-                <i class=></i>
-              </span>
-            </div>
+            <div style="position: relative; width: 300px; height: 300px; border: 3px solid #ccc; border-radius: 10px; overflow: hidden; margin: auto;">
+              <div style="text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%;">
+                  <img src="{{ form.instance.photo.url }}" alt="Profile Picture" style="border-radius: 50%; object-fit: cover; width: 100%; height: 100%;">
+                  <!-- Camera icon to trigger file input -->
+                  <i class="fas fa-camera camera-icon" id="cameraIcon" style="position: absolute;  transform: translate(-50%, -50%);"></i>
+              </div>
+          </div>         
                 
             {% for field in form %}
             {% if field.name == 'gender' %}
@@ -98,7 +99,7 @@
                       
                                     <div class="input-group-append">
                                       <a href="{{ user.pdf_document.url }}" target="_blank" class="btn btn-outline-secondary text-black">
-                                  <i class="fa fa-eye"></i> 
+                                  <i class="fa fa-eye"></i> View PDF (Existing) 
                               </a>
                                     </div>
                             
