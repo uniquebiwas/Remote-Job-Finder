@@ -11,10 +11,11 @@
     <div class="row align-items-center justify-content-center">
       <div class="col-md-12">
         <div class="mb-5 text-center">
-          <h1 class="text-white font-weight-bold">Find Your Dream Job With Us.</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate est, consequuntur perferendis.</p>
-        </div>
-        <form method="GET" action="{% url 'jobapp:search_result' %}" class="search-jobs-form">
+          <h1 class="text-white font-weight-bold">Elevate Your Career to New Heights!</h1>
+          <p class="lead text-white">Discover extraordinary opportunities that match your ambition. Your journey to success begins here, where passion meets profession.</p>
+      </div>
+      
+      <form method="GET" action="{% url 'jobapp:search_result' %}" class="search-jobs-form">
           {% include 'jobapp/search.html' %}
         </form>
       </div>
@@ -31,10 +32,10 @@
   <div class="container">
     <div class="row mb-5 justify-content-center">
       <div class="col-md-7 text-center">
-        <h2 class="section-title mb-2 text-white">Remote Job Finder Stats</h2>
-        <p class="lead text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita unde officiis
-          recusandae sequi excepturi corrupti.</p>
+        <h2 class="section-title mb-2 text-white">Discover the Power of Remote Job Finder</h2>
+        <p class="lead text-white">Join a thriving community where opportunities and talent converge. Explore the impact we've made together!</p>
       </div>
+
     </div>
     <div class="row pb-0 block__19738 section-counter">
 
@@ -129,10 +130,10 @@
     {% if request.user.role == "employer" %}
     <div class="row align-items-center">
       <div class="col-md-8">
-        <h2 class="text-white">Want To Hire?</h2>
-        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
-          impedit.</p>
-      </div>
+        <h2 class="text-white">Looking for Exceptional Talent?</h2>
+        <p class="text-white">Join us in shaping the future with top-tier professionals. Discover your next key team member today!</p>
+    </div>
+    
       <div class="col-md-3 ml-auto">
         <a href="{% url 'jobapp:create-job' %}" class="btn btn-primary btn-lg btn-block text-white btn-search">Post Your Job</a>
       </div>
@@ -140,10 +141,10 @@
     {% elif request.user.role == "employee" %}
     <div class="row align-items-center">
       <div class="col-md-8">
-        <h2 class="text-white">Career exploration?</h2>
-        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
-          impedit.</p>
-      </div>
+        <h2 class="text-white">Explore Your Future with Us!</h2>
+        <p class="mb-0 text-white lead">Embark on a rewarding career journey. Join us and be part of a team that values your growth and success.</p>
+    </div>
+    
       <div class="col-md-3 ml-auto">
         <a href="{% url 'jobapp:job-list' %}" class="btn btn-primary btn-lg btn-block text-white btn-search">Job List</a>
       </div>
@@ -151,10 +152,10 @@
     {% else %}
     <div class="row align-items-center">
       <div class="col-md-8">
-        <h2 class="text-white">Career exploration?</h2>
-        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
-          impedit.</p>
-      </div>
+        <h2 class="text-white">Explore Your Future with Us!</h2>
+        <p class="mb-0 text-white lead">Embark on a rewarding career journey. Join us and be part of a team that values your growth and success.</p>
+    </div>
+    
       <div class="col-md-3 ml-auto">
         <a href="{% url 'account:employee-registration' %}" class="btn btn-primary btn-lg btn-block text-white btn-search">Sign Up</a>
       </div>

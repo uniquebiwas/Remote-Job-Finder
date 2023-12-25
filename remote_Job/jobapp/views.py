@@ -194,11 +194,11 @@ def search_result_view(request):
     page_obj = paginator.get_page(page_number)
 
     # Check if there are no results
-    no_results = not job_list.exists()
+    no_results = not page_obj.object_list.exists()
 
     context = {
         'page_obj': page_obj,
-        'no_results': no_results,  # Add this flag to the context
+        'no_results': no_results,  # Update the flag to check page_obj instead of job_list
     }
 
     # Render the HTML template with the context data

@@ -30,13 +30,13 @@ class EmployeeRegistrationForm(UserCreationForm):
         self.fields['gender'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
-        self.fields['first_name'].label = "First Name:"
-        self.fields['last_name'].label = "Last Name:"
-        self.fields['pdf_document'].label = "Upload your CV (PDF):"
-        self.fields['password1'].label = "Password:"
-        self.fields['password2'].label = "Confirm Password:"
-        self.fields['email'].label = "Email:"
-        self.fields['phone_number'].label = "Phone Number:"
+        self.fields['first_name'].label = "First Name"
+        self.fields['last_name'].label = "Last Name"
+        self.fields['pdf_document'].label = "Upload your CV (PDF)"
+        self.fields['password1'].label = "Password"
+        self.fields['password2'].label = "Confirm Password"
+        self.fields['email'].label = "Email"
+        self.fields['phone_number'].label = "Phone Number"
         # Set placeholders for input fields
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Enter First Name'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
@@ -209,19 +209,18 @@ class PasswordResetForm(BasePasswordResetForm):
 
 
 # Change Password code .........
-
 class ChangePasswordForm(PasswordChangeForm):
     old_password = forms.CharField(
         label="Old Password: ",
-        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Old Password', 'class': 'password-toggle'}),
     )
     new_password1 = forms.CharField(
         label="New Password: ",
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'New Password', 'class': 'password-toggle'}),
     )
     new_password2 = forms.CharField(
         label="Confirm Password: ",
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password', 'class': 'password-toggle'}),
     )
 
     def clean(self):

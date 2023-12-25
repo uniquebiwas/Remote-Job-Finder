@@ -181,7 +181,6 @@ def change_password(request):
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'account/password_reset_form.html'
     email_template_name = 'account/password_reset_email.html'
-    
     success_url = reverse_lazy('account:password_reset_done')
     
 
