@@ -12,14 +12,14 @@ class JobForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         forms.ModelForm.__init__(self, *args, **kwargs)
-        self.fields['title'].label = "Job Title :"
-        self.fields['location'].label = "Job Location :"
-        self.fields['salary'].label = "Salary :"
-        self.fields['description'].label = "Job Description :"
-        self.fields['tags'].label = "Tags :"
-        self.fields['last_date'].label = "Submission Deadline :"
-        self.fields['company_name'].label = "Company Name :"
-        self.fields['url'].label = "Website :"
+        self.fields['title'].label = "Job Title "
+        self.fields['location'].label = "Job Location "
+        self.fields['salary'].label = "Salary "
+        self.fields['description'].label = "Job Description "
+        self.fields['tags'].label = "Tags "
+        self.fields['last_date'].label = "Submission Deadline "
+        self.fields['company_name'].label = "Company Name "
+        self.fields['url'].label = "Website "
 
 
         self.fields['title'].widget.attrs.update(
@@ -119,14 +119,14 @@ class JobEditForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         forms.ModelForm.__init__(self, *args, **kwargs)
-        self.fields['title'].label = "Job Title :"
-        self.fields['location'].label = "Job Location :"
+        self.fields['title'].label = "Job Title "
+        self.fields['location'].label = "Job Location "
         self.fields['salary'].label = "Salary :"
-        self.fields['description'].label = "Job Description :"
+        self.fields['description'].label = "Job Description "
         # self.fields['tags'].label = "Tags :"
-        self.fields['last_date'].label = "Dead Line :"
-        self.fields['company_name'].label = "Company Name :"
-        self.fields['url'].label = "Website :"
+        self.fields['last_date'].label = "Dead Line "
+        self.fields['company_name'].label = "Company Name "
+        self.fields['url'].label = "Website "
 
 
         self.fields['title'].widget.attrs.update(

@@ -23,23 +23,6 @@
     <div class="row">
       <div class="col-lg-10 mb-5 mx-auto ">
         {% include 'messages.html' %}
-
-        {% if form.errors %}
-        {% for field in form %}
-        {% for error in field.errors %}
-        <div class="alert alert-danger alert-dismissable">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>{{ field.label|capfirst }} {{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-        <div class="alert alert-danger alert-dismissable">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endif %}
         
         <form method="POST" action="" enctype="multipart/form-data" class="p-4 rounded-lg" id="login-form" style="background-color: #ffffff; position: relative;">
           <!-- <div style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;"></div>
@@ -62,7 +45,7 @@
                                     id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
                                     <div class="input-group-append">
                                       <button type="button" class="btn btn-outline-eye" onclick="togglePassword('id_{{ field.name }}')">
-                                        <i class="fa-solid fa-eye fa-lg" id="eyeIcon" style="color: #4a4646;"></i> 
+                                        <i class="fa-solid fa-eye" id="eyeIcon" style="color: #6a6161;"></i> 
                                       </button> 
                                     </div>
                             </div>
