@@ -13,3 +13,4 @@ ua-parser==0.10.0
 user-agents==2.2.0
 phonenumbers
 django-phonenumber_field
+pillow
