@@ -47,7 +47,7 @@
                       {% if field.field.widget.input_type == 'password' %}
                       <div class="input-group-append">
                         <button type="button" class="btn btn-outline-eye" >
-                          <i class="fa-solid fa-eye" id="togglePassword" style="color: #6a6161;"></i> 
+                          <i class="fa-solid fa-eye" id="togglePassword1" style="color: #6a6161;"></i> 
                           
                         </button> 
                       </div>     
@@ -82,6 +82,19 @@
   </div>
 </section>
 
+<script>
+  const togglePassword = document.querySelector('#togglePassword1');
+  const password = document.querySelector('#id_password');
 
+  togglePassword.addEventListener('click', function (e) {
+      // Toggle the type attribute
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+
+      // Toggle the eye icon classes
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+  });
+</script>
 
 {% endblock %}

@@ -16,16 +16,18 @@
  
     <script src="{% static 'js/custom.js' %}"></script> 
     <script>
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#id_password');
+        function togglePassword(fieldId, eyeIconId) {
+      var eyeIcon = document.getElementById(eyeIconId);
+  
+      // Check the current icon class
+      var isEye = eyeIcon.classList.contains('fa-eye');
       
-        togglePassword.addEventListener('click', function (e) {
-            // Toggle the type attribute
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
+      const passwordField = document.getElementById(fieldId);
+      const fieldType = isEye ? 'text' : 'password';
+      passwordField.type = fieldType;
       
-            // Toggle the eye icon classes
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+      // Toggle the eye icon classes
+      eyeIcon.classList.toggle('fa-eye', !isEye);
+      eyeIcon.classList.toggle('fa-eye-slash', isEye);
+    }
       </script>
