@@ -87,23 +87,21 @@
   </div>
 </section>
 
-<!-- <script>
-  function togglePassword(fieldId) {
-    var eyeIcon = document.getElementById('eyeIcon');
+<script>
+  function togglePassword(inputId, eyeIconId) {
+      var passwordInput = document.getElementById(inputId);
+      var eyeIcon = document.getElementById(eyeIconId);
 
-    // Check the current color
-    var currentColor = eyeIcon.style.color;
-
-    // Toggle color
-    // if (currentColor === 'blue') {
-    //   eyeIcon.style.color = '#000000'; // Change back to black
-    // } else {
-    //   eyeIcon.style.color = 'blue'; // Change to purple
-    // }
-    const passwordField = document.getElementById(fieldId);
-    const fieldType = passwordField.type === 'password' ? 'text' : 'password';
-    passwordField.type = fieldType;
+      if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          eyeIcon.classList.remove("fa-eye");
+          eyeIcon.classList.add("fa-eye-slash");
+      } else {
+          passwordInput.type = "password";
+          eyeIcon.classList.remove("fa-eye-slash");
+          eyeIcon.classList.add("fa-eye");
+      }
   }
-</script> -->
+</script>
 
 {% endblock %}
