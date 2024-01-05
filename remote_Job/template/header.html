@@ -47,7 +47,7 @@
                 <li class="pr-3 has-children">
                   <a>Dashboard</a> 
                   <ul class="dropdown">
-                    <li><a>Welcome {{ user.first_name }}...!!!!</a></li> 
+                    <li><a>Vendor: {{ user.first_name }}</a></li> 
                     <li><a href="{% url 'jobapp:dashboard' %}">My Jobs</a></li>
                     <li><a href="{% url 'account:change_password' %}">Change Password</a></li>
                     <li><a href="#" onclick="showLogoutAlert()">Logout</a></li>

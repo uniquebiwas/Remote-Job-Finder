@@ -573,3 +573,12 @@ def send_email(request):
         return JsonResponse(response_data)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+
+import os
+import zipfile
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.conf import settings
+from .models import Applicant
+
