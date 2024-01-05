@@ -23,7 +23,7 @@
         <div class="border p-3 rounded">
           <h3>Select/Reject:</h3> 
             <div class="d-flex">
-              <span class="p-4" data-toggle="modal" data-target="#emailPositionModal" onclick="setButtonType('select')"><i class="fa-solid fa-circle-check fa-beat fa-2xl" style="color: #3cda10;"></i> </span>
+              <span  class="p-4" data-toggle="modal" data-target="#emailPositionModal" onclick="setButtonType('select')"><i class="fa-solid fa-circle-check fa-beat fa-2xl" style="color: #3cda10;"></i> </span>
               <span class="p-4" data-toggle="modal" data-target="#emailPositionModal" onclick="setButtonType('reject')"><i class="fa-solid fa-circle-xmark  fa-beat fa-2xl" style="color: #da0707;"></i></span>
           </div>
           
@@ -80,42 +80,42 @@
         
   </div>
   </section>
-  
+
 <!-- Modal -->
-<div class="modal fade" id="emailPositionModal" tabindex="-1" role="dialog" aria-labelledby="emailPositionModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="emailPositionModalLabel">Enter a Position</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="emailPositionForm">
-          <div class="form-group">
-            <label for="mero_name">Name:</label>
-            <input type="text" class="form-control" id="mero_name" value="{{ applicant.get_full_name }}" readonly>
-          </div>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="text" class="form-control" id="email" value="{{ applicant.email }}" readonly>
-          </div>
-          <div class="form-group">
-            <label for="company_name">Company Name:</label>
-            <input type="text" class="form-control" id="company_name" value="{{ user.first_name }}" readonly>
-          </div>
-          <div class="form-group">
-            <label for="position">Position:</label>
-            <input type="text" class="form-control" id="position" required>
-          </div>
-          
-          <button type="button" class="btn btn-primary" onclick="sendEmail()">Submit</button>
-        </form>
+  <div class="modal fade" id="emailPositionModal" tabindex="-1" role="dialog" aria-labelledby="emailPositionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="emailPositionModalLabel">Details:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="emailPositionForm">
+            <div class="form-group">
+              <label for="mero_name">Name:</label>
+              <input type="text" class="form-control" id="mero_name" value="{{ applicant.get_full_name }}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="text" class="form-control" id="email" value="{{ applicant.email }}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="company_name">Company Name:</label>
+              <input type="text" class="form-control" id="company_name" value="{{ user.first_name }}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="position">Position:</label>
+              <input type="text" class="form-control" id="position" value="{{ job_title }}" readonly>
+            </div>
+            
+            <button type="button" class="btn btn-primary" onclick="sendEmail()">Submit</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 <script>
   var selectedButtonType = ''; // Variable to store the selected button type
@@ -156,13 +156,18 @@
         title: 'Success!',
         text: `Email sent successfully! Candidate ${selectedButtonType === 'select' ? 'selected' : 'rejected'}.`,
         showConfirmButton: false,
-        timer: 3500
+
+        timer: 2500
       })
       .then(() => {
         // Close the modal after successful submission
         $('#emailPositionModal').modal('hide');
+        // Disable the button after successful submission
+        
         // Reload the page after successful submission
         window.location.reload();
+        
+        
       });
     } else {
           // Show an error message to the user
@@ -176,7 +181,7 @@
       });
     } else {
       // Show a validation error if any of the fields are empty
-      Swal.fire( {icon:'error', text:"Position is required!"});
+      Swal.fire( {icon:'error', text:"Required!"});
     }
   }
 </script>

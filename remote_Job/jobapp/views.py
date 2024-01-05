@@ -79,8 +79,6 @@ def home_view(request):
         'page_obj': page_obj
     }
     
-    # Debugging line (can be removed in production)
-    print('ok')
     
     # Render the HTML template with the context data
     return render(request, 'jobapp/index.html', context)
@@ -216,7 +214,8 @@ def apply_job_view(request, id):
 
     user = get_object_or_404(User, id=request.user.id)
     applicant = Applicant.objects.filter(user=user, job=id)
-
+    print(user)
+    print("hello")
     if not applicant:
         if request.method == 'POST':
             if form.is_valid():
@@ -352,9 +351,12 @@ def applicant_details_view(request, id):
     """
 
     applicant = get_object_or_404(User, id=id)
+    applicant1 = get_object_or_404(Applicant, user_id=id, job__title=request.GET.get('job_title'))
+
 
     context = {
-        'applicant': applicant
+        'applicant': applicant,
+        'job_title': applicant1.job.title
     }
 
     return render(request, 'jobapp/applicant-details.html', context)
@@ -471,14 +473,79 @@ def contact_us_view(request):
     return render(request, 'jobapp/contact_us.html', {'form': form})
 
 # View to send email based on button type (select or reject)
+# def send_email(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         email = data.get('email')
+#         position = data.get('position')
+#         company_name = data.get('company_name')
+#         mero_name = data.get('mero_name')
+#         button_type = data.get('buttonType')
+#         if button_type == 'reject':
+#             print('Rejected')
+#         elif button_type == 'select':
+#             print('Selected')
+        
+#         # Send email based on button type (select or reject)
+#         subject = 'Application Status'
+#         template_name = 'jobapp/job_mail.html'
+#         context = {
+#             'company_name': company_name,
+#             'position': position,
+#             'mero_name':mero_name,
+#             'buttonType': button_type,
+#         }
+
+#         try:
+#             # Render the email content using the template and context
+#             email_content = render_to_string(template_name, context)
+#             # Send the email
+#             email = EmailMessage(subject, email_content, 'your@example.com', [email])
+#             email.content_subtype = "html"
+#             email.send()
+
+#             response_data = {'success': True, 'message': 'Email sent successfully!', 'buttonType': button_type}
+#         except Exception as e:
+#             print(str(e))
+#             response_data = {'success': False, 'message': 'Failed to send email.'}
+        
+#         return JsonResponse(response_data)
+#     else:
+#         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
 def send_email(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        email = data.get('email')
+        email = data.get('email')  # Assuming 'email' is used to uniquely identify the user
         position = data.get('position')
         company_name = data.get('company_name')
         mero_name = data.get('mero_name')
         button_type = data.get('buttonType')
+
+        # Update the status based on the button_type
+        if button_type == 'reject':
+            status = 'Rejected'
+        elif button_type == 'select':
+            status = 'Selected'
+        else:
+            # Handle other cases if needed
+            return JsonResponse({'success': False, 'message': 'Invalid button_type'})
+
+        # Find the Applicant based on the User's email
+        try:
+            user = User.objects.get(email=email)
+            job_title=position
+            # print(user)
+            applicant = Applicant.objects.get(user=user, job__title=job_title)
+
+            # Save the status to the Applicant model
+            applicant.status = status
+            applicant.save()
+
+            # return JsonResponse({'success': True, 'message': 'Status updated successfully for all applicants.'})
+
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'User not found.'})
 
         # Send email based on button type (select or reject)
         subject = 'Application Status'
@@ -486,7 +553,7 @@ def send_email(request):
         context = {
             'company_name': company_name,
             'position': position,
-            'mero_name':mero_name,
+            'mero_name': mero_name,
             'buttonType': button_type,
         }
 
@@ -502,8 +569,7 @@ def send_email(request):
         except Exception as e:
             print(str(e))
             response_data = {'success': False, 'message': 'Failed to send email.'}
-        
+
         return JsonResponse(response_data)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-
