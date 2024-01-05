@@ -158,16 +158,27 @@
                                         <th>Job Title</th>
                                         <th>Posted Date</th>
                                         <th>Date expiring</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for job in appliedjobs %}
-                                    <tr id="row_{{ job.id }}">
-                                        <td><a href="{% url 'jobapp:single-job' job.job.id %}">{{ job.job.title }}</a></td>
-                                        <td>{{ job.timestamp | date:'M d, Y'  }}</td>
-                                        <td>{{ job.job.last_date | date:'M d, Y' }}</td>
-                                    </tr>
+                                        <tr id="row_{{ job.id }}">
+                                            <td><a href="{% url 'jobapp:single-job' job.job.id %}">{{ job.job.title }}</a></td>
+                                            <td>{{ job.timestamp | date:'M d, Y'  }}</td>
+                                            <td>{{ job.job.last_date | date:'M d, Y' }}</td>
+                                            <td>
+                                                {% if job.status == "Selected" %}
+                                                    <span class="badge badge-success">Selected</span>
+                                                {% elif job.status == "Rejected" %}
+                                                    <span class="badge badge-danger px-2">Rejected</span>
+                                                {% else %}
+                                                    <span class="badge badge-info px-2">In-Progress</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
                                     {% endfor %}
+
                                 </tbody>
                             </table>
                             {% else %}
