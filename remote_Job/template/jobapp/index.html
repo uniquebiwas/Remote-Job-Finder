@@ -170,10 +170,113 @@
   </div>
 
 </section>
+<!-- <section class="py-5 bg-image overlay-primary fixed overlay" id="next"
+  style="background-image: url('{% static 'images/bgrr.jpg' %}');">
+  <div class="container">
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-7 text-center">
+        
+        <a href="#">
+          <h2 class="section-title mb-2 text-white">
+            Testimonials
+          </h2>
+        </a>
+        <p class="lead text-white">Here from our staffs: </p>
+      </div>
+    </div>
+
+    <div id="testimonialCarousel" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+          <div class="text-center">
+            <p class="lead text-white">Calvin: You know sometimes when I'm talking, my words can't keep up with my thoughts... I wonder why we think faster than we speak. Hobbes: Probably so we can think twice.</p>
+            <p class="text-white">- Samir Chaulagain</p>
+            <img src="https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg" alt="Profile Image" class="rounded-circle mr-2" style="width: 80px; height: 80px; object-fit: cover;"> 
+
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="text-center">
+            <p class="lead text-white">Thank you. before I begin, I'd like everyone to notice that my report is in a professional, clear plastic binder...When a report looks this good, you know it'll get an A. That's a tip kids. Write it down.</p>
+            <p class="text-white">- Hridaya Bhattarai</p>
+            <img src="https://img.freepik.com/free-photo/handsome-bearded-guy-posing-against-white-wall_273609-20597.jpg?size=626&ext=jpg&ga=GA1.1.1412446893.1704499200&semt=sph" alt="Profile Image" class="rounded-circle mr-2" style="width: 80px; height: 80px; object-fit: cover;"> 
+
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="text-center">
+            <p class="lead text-white">My behavior is addictive functioning in a disease process of toxic co-dependency. I need holistic healing and wellness before I'll accept any responsibility for my actions.</p>
+            <p class="text-white">- Sakar Gautam</p>
+            <img src="https://t4.ftcdn.net/jpg/02/14/74/61/360_F_214746128_31JkeaP6rU0NzzzdFC4khGkmqc8noe6h.jpg" alt="Profile Image" class="rounded-circle mr-2" style="width: 80px; height: 80px; object-fit: cover;"> 
+
+          </div>
+        </div>
+      </div>
+
+      <a class="carousel-control-prev" href="#testimonialCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#testimonialCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  </div>
+</section> -->
+<!-- Assuming testimonials is a queryset of Testimonial objects passed from your view -->
+
+<section class="py-5 bg-image overlay-primary fixed overlay" id="next" style="background-image: url('{% static 'images/bgrr.jpg' %}');">
+  <div class="container">
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-7 text-center">
+          <h2 class="section-title mb-2 text-white">Testimonials</h2>
+        <p class="lead text-white">Hear from our staffs:</p>
+      </div>
+    </div>
+
+    <div id="testimonialCarousel" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        {% for testimonial in testimonials %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="text-center">
+              <p class="lead text-white">{{ testimonial.content }}</p>
+              <p class="text-white">- {{ testimonial.author_name }}</p>
+              {% if testimonial.profile_image %}
+                <img src="{{ testimonial.profile_image.url }}" alt="Profile Image" class="rounded-circle mr-2" style="width: 80px; height: 80px; object-fit: cover;">
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <a class="carousel-control-prev" href="#testimonialCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#testimonialCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
 
 
 {% endblock %}
 {% block extra_scripts %}
+<script>
+  // Activate the carousel
+  $(document).ready(function(){
+    $('#testimonialCarousel').carousel({
+      interval: 1500 // Adjust the interval as needed (in milliseconds)
+    });
+  });
+</script>
 <script>
 
 $("#ajax_listing_paginattion" ).delegate( "a#ajax_paginator", "click", function( event ) {

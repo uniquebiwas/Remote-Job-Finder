@@ -19,4 +19,9 @@ class BookmarkJobAdmin(admin.ModelAdmin):
     list_display = ('job','user','timestamp')
 admin.site.register(BookmarkJob,BookmarkJobAdmin)
 
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ('author_name', 'content',)
+    search_fields = ('author_name', 'content',)
+
+admin.site.register(Testimonial, TestimonialAdmin)
 

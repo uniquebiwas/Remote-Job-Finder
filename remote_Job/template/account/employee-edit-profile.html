@@ -62,13 +62,16 @@
             {% csrf_token %}
             <div style="position: relative; width: 300px; height: 300px; border: 3px solid #ccc; border-radius: 10px; overflow: hidden; margin: auto;">
               <div style="text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%;">
-                  <img src="{{ form.instance.photo.url }}" alt="Profile Picture" style="border-radius: 50%; object-fit: cover; width: 100%; height: 100%;">
-                  <!-- Camera icon to trigger file input -->
+                
+               <a href="{{form.instance.photo.url}}" > <img id="profileImage"  src="{{ form.instance.photo.url }}" alt="Profile Picture" style="border-radius: 50%; object-fit: cover; width: 100%; height: 100%;">
+               </a>
+                <!-- Camera icon to trigger file input -->
                   <i class="fas fa-camera camera-icon" id="cameraIcon" style="position: absolute;  transform: translate(-50%, -50%);"></i>
               </div>
           </div>         
                 
             {% for field in form %}
+
             {% if field.name == 'gender' %}
             <div class="row form-group mb-4">
               <div class="col-md-12 mb-3 mb-md-0">
@@ -84,7 +87,7 @@
                 </div>
               </div>
             </div>
-
+            
             {% else %}
 
             <div class="row form-group">
@@ -126,12 +129,29 @@
     </div>
   </div>
 </section>
+
 <script>
   // JavaScript to trigger file input when camera icon is clicked
   document.getElementById('cameraIcon').addEventListener('click', function() {
     // Assuming your file input has the id 'id_photo'
     document.getElementById('id_photo').click();
   });
+
+  // JavaScript to handle file input change event
+  document.getElementById('id_photo').addEventListener('change', function(event) {
+    // Assuming your image has the id 'profileImage'
+    var imageElement = document.getElementById('profileImage');
+
+    // Check if a file is selected
+    if (event.target.files.length > 0) {
+      // Update the image source with the selected file
+      var newImage = URL.createObjectURL(event.target.files[0]);
+      imageElement.src = newImage;
+    }
+  });
 </script>
+
+
+
 
 {% endblock %}
