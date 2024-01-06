@@ -63,3 +63,13 @@ class BookmarkJob(models.Model):
 
     def __str__(self):
         return self.job.title
+
+
+
+class Testimonial(models.Model):
+    author_name = models.CharField(max_length=255)
+    content = models.TextField()
+    profile_image = models.ImageField(upload_to='testimonial_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.author_name

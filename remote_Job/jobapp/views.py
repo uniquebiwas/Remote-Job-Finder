@@ -29,12 +29,14 @@ def home_view(request):
     """
     View to display the home page, including job listings and pagination.
     """
-
+    testimonials = Testimonial.objects.all()
+    print(testimonials)
     # Retrieve published jobs ordered by timestamp
     published_jobs = Job.objects.filter(is_published=True).order_by('-timestamp')
     
     # Filter open jobs from the published jobs
     jobs = published_jobs.filter(is_closed=False)
+    # print(jobs)
     
     # Count total candidates and total companies
     total_candidates = User.objects.filter(role='employee').count()
@@ -76,7 +78,8 @@ def home_view(request):
         'total_companies': total_companies,
         'total_jobs': len(jobs),
         'total_completed_jobs': len(published_jobs.filter(is_closed=True)),
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'testimonials':testimonials
     }
     
     
@@ -573,12 +576,3 @@ def send_email(request):
         return JsonResponse(response_data)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-
-
-import os
-import zipfile
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.conf import settings
-from .models import Applicant
-

@@ -169,9 +169,7 @@ class EmployeeProfileEditForm(forms.ModelForm):
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name'})
         self.fields['phone_number'].widget.attrs.update({'placeholder': 'Enter Phone Number'})
 
-        # self.fields['photo'].widget.attrs.update({'placeholder': 'Change Profile Picture'})
-        # self.fields['pdf_document'].widget.attrs.update({'placeholder': 'Want to Change PDF Document'})
-
+     
     class Meta:
         model = User
         fields = ['photo',"first_name", "last_name", "phone_number", "gender","pdf_document"]
@@ -183,7 +181,6 @@ class EmployeeProfileEditForm(forms.ModelForm):
             'last_name': 'Last Name',
             'phone_number': 'Phone Number',
             'gender': 'Gender',
-            # 'photo': 'Change Profile Picture',
         }
 
 # Custom form for initiating password reset process
