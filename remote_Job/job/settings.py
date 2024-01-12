@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'jobapp.apps.JobappConfig',
     'account.apps.AccountConfig',
 
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'taggit',
     'user_visit',
     'crispy_forms',
+    "phonenumber_field",
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -172,4 +172,5 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
 

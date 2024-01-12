@@ -181,6 +181,7 @@ class EmployeeProfileEditForm(forms.ModelForm):
             'last_name': 'Last Name',
             'phone_number': 'Phone Number',
             'gender': 'Gender',
+            'photo':'photo'
         }
 
 # Custom form for initiating password reset process
@@ -199,10 +200,6 @@ class PasswordResetForm(BasePasswordResetForm):
         widget=forms.EmailInput(attrs={'placeholder': 'Enter your Email', 'autocomplete': 'email'}),
         # Email input field with placeholder and autocomplete attribute
     )
-
-
-
-
 
 
 # Change Password code .........

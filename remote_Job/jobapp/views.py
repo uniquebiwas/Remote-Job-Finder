@@ -5,17 +5,13 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
+from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse,HttpResponse
 from django.core.serializers import serialize
 from django.core.mail import send_mail
 from django.conf import settings
-from django.http import JsonResponse
-from django.http import HttpResponse
 from django.template.loader import render_to_string
 import json
-from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from django.http import JsonResponse
 from account.models import User
 from jobapp.forms import *
 from jobapp.models import *
@@ -30,7 +26,7 @@ def home_view(request):
     View to display the home page, including job listings and pagination.
     """
     testimonials = Testimonial.objects.all()
-    print(testimonials)
+    # print(testimonials)
     # Retrieve published jobs ordered by timestamp
     published_jobs = Job.objects.filter(is_published=True).order_by('-timestamp')
     
@@ -107,7 +103,7 @@ def job_list_View(request):
     # Render the HTML template with the context data
     return render(request, 'jobapp/job-list.html', context)
 
-# View for employers to create a job post
+# View for vendors to create a job post
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def create_job_View(request):
@@ -256,7 +252,7 @@ def dashboard_view(request):
     total_applicants = {}
     
     if request.user.role == 'employer':
-        # For employers, fetch their jobs and count applicants for each job
+        # For vendors, fetch their jobs and count applicants for each job
         jobs = Job.objects.filter(user=request.user.id)
         for job in jobs:
             count = Applicant.objects.filter(job=job.id).count()
@@ -576,3 +572,19 @@ def send_email(request):
         return JsonResponse(response_data)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Applicant, Job
+
+@require_POST
+def reject_all_applicants(request, job_id):
+    try:
+        # Update the status for all applicants related to the specific job to "Rejected"
+        job = Job.objects.get(pk=job_id)
+        job.applicant_set.exclude(status="Selected").update(status="Rejected")
+        return JsonResponse({'message': 'All applicants for the job rejected successfully'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

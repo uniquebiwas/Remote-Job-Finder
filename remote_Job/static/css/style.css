@@ -953,18 +953,20 @@ h1, h2, h3, h4 {
   border: 1px solid #dee2e6;
   text-align: center;
   margin: 0 5px;
-  text-decoration: none; }
+  text-decoration: none;
+  color: #000000; }
   .custom-pagination a.prev, .custom-pagination a.next {
     width: auto;
     height: 30px;
     line-height: 30px;
     padding-left: 10px;
     padding-right: 10px;
-    border-radius: 4px; }
+    border-radius: 4px; 
+    color:black;}
   .custom-pagination a.active, .custom-pagination a:hover {
-    background: #9c0d94;
+    background: #000000;
     color: #fff;
-    border-color: #9c0d94; }
+    border-color: #000000; }
 
 .border-width-2 {
   border-width: 2px !important; }
@@ -1358,7 +1360,7 @@ h1, h2, h3, h4 {
   width: 40px;
   height: 40px;
   position: relative;
-  background: #0417a9;
+  background: #007bff;
   border-radius: 50%;
   text-decoration: none !important; }
   .footer-social a > span, .social a > span {
@@ -1370,14 +1372,14 @@ h1, h2, h3, h4 {
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%); }
   .footer-social a:hover, .social a:hover {
-    background: #fff; }
+    background: #90c317; }
     .footer-social a:hover span, .social a:hover span {
-      color: #09a219; }
+      color: #ffff; }
 
 .social a:hover {
   background: #09a219; }
   .social a:hover span {
-    color: #fff; }
+    color: #90c317; }
 
 .filters .btn {
   border-color: transparent;
