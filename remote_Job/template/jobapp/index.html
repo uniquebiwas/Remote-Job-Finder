@@ -241,11 +241,13 @@
         {% for testimonial in testimonials %}
           <div class="carousel-item {% if forloop.first %}active{% endif %}">
             <div class="text-center">
-              <p class="lead text-white">{{ testimonial.content }}</p>
-              <p class="text-white">- {{ testimonial.author_name }}</p>
               {% if testimonial.profile_image %}
                 <img src="{{ testimonial.profile_image.url }}" alt="Profile Image" class="rounded-circle mr-2" style="width: 80px; height: 80px; object-fit: cover;">
               {% endif %}
+              <p class="text-white"> {{ testimonial.author_name }}</p>
+              <p class="lead text-white">{{ testimonial.content }}</p>
+              
+              
             </div>
           </div>
         {% endfor %}

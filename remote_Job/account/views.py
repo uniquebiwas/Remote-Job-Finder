@@ -9,8 +9,6 @@ from .forms import ChangePasswordForm
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.tokens import default_token_generator
 from account.models import User  # Import the custom User model
-from django.utils.encoding import force_text
-from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage

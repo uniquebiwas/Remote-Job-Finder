@@ -69,9 +69,9 @@
                   <i class="fas fa-camera camera-icon" id="cameraIcon" style="position: absolute;  transform: translate(-50%, -50%);"></i>
               </div>
           </div>         
-                
+          <!-- <div>{{user.photo.url}}</div> -->
             {% for field in form %}
-
+            
             {% if field.name == 'gender' %}
             <div class="row form-group mb-4">
               <div class="col-md-12 mb-3 mb-md-0">
@@ -87,27 +87,30 @@
                 </div>
               </div>
             </div>
-            
+          
             {% else %}
-
+            
             <div class="row form-group">
               <div class="col-md-12 mb-3 mb-md-0">
                 <label class="text-black" for="id_{{ field.name }}">{{ field.label }}</label>
                 <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
                   id="id_{{ field.name }}" value="{{ field.value }}"
                   placeholder="{{ field.field.widget.attrs.placeholder }}">
+                  
               </div>
             </div>
+
+            
             {% if field.name == 'pdf_document' %}
                       
-                                    <div class="input-group-append">
-                                      <a href="{{ user.pdf_document.url }}" target="_blank" class="btn btn-outline-secondary text-black">
-                                  <i class="fa fa-eye"></i> View PDF (Existing) 
-                              </a>
-                                    </div>
+              <div class="input-group-append">
+                <a href="{{ user.pdf_document.url }}" target="_blank" class="btn btn-outline-secondary text-black">
+                <i class="fa fa-eye"></i> View PDF (Existing) 
+                </a>
+               </div>
                             
                         
-                        {% endif %}
+            {% endif %}
 
             {% endif %}
             {% endfor %}
