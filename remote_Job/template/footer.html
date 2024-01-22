@@ -1,3 +1,4 @@
+
     <footer class="site-footer">
 
       <a href="#top" class="smoothscroll scroll-top">
@@ -26,8 +27,11 @@
             <h3>Support</h3>
             <ul class="list-unstyled">
               <li><a href="{% url 'jobapp:terms-condition' %}">Terms and condition</a></li>
+              <li><a href="#" id="donateButton">Donate</a></li>
+
             </ul>
           </div>
+          
           <div class="col-6 col-md-3 mb-4 mb-md-0">
             <h3>Contact Us</h3>
             <div class="footer-social ">
@@ -56,3 +60,94 @@
     </footer>
   
   </div>
+<!-- Include Khalti Checkout Web script -->
+<script src="https://unpkg.com/khalti-checkout-web"></script>
+<!-- <script src="https://khalti.com/static/khalti-checkout.js"></script> -->
+
+
+<script>
+  // Replace with your actual Khalti public key
+  const khaltiPublicKey = "test_public_key_dc1970829015486687411487e45d789a";
+  // const khaltiPublicKey = "test_public_key_63359c1f736d4965b49f20dc91ccef1d";
+  
+  
+
+  // Event listener for the donation button
+  document.getElementById('donateButton').addEventListener('click', function () {
+      // Use SweetAlert to prompt the user for the donation amount
+      Swal.fire({
+           imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Khalti_Digital_Wallet_Logo.jpg/1200px-Khalti_Digital_Wallet_Logo.jpg?20180702123857",
+          imageWidth: 400,
+          imageHeight: 200,
+          imageAlt: "Custom image",
+          title: 'Enter Donation Amount',
+          input: 'number',
+          inputLabel: 'Amount (NPR)',
+          inputPlaceholder: 'Enter amount..',
+          showCancelButton: true,
+          confirmButtonText: 'Donate',
+          cancelButtonText: 'Cancel',
+          
+          inputValidator: (value) => {
+              // Validate the user input
+              return new Promise((resolve) => {
+                  if (value > 0) {
+                      resolve();
+                  } else {
+                      resolve('Please enter a valid donation amount.');
+                  }
+              });
+          }
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // The user entered a valid amount
+              const donationAmount = parseFloat(result.value);
+
+              // Create KhaltiCheckout configuration
+              const khaltiConfig = {
+                  publicKey: khaltiPublicKey,
+                  productIdentity: 1,
+                  productName: "Donation",
+                  productUrl: "#", // Replace with your website URL
+                  eventHandler: {
+                      onSuccess: function (payload) {
+                          // Handle successful payment (you can customize this)
+                          console.log("Payment successful", payload);
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'Donation Successful!',
+                              text: 'Thank you so much for your generous donation. Your support means a lot and will help us make a positive impact. We appreciate your kindness and commitment to our cause.',
+                          });
+                      },
+                      onError: function (error) {
+                          // Handle payment error (you can customize this)
+                          console.log("Payment error", error);
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Donation Failed',
+                              text: 'Something went wrong. Please try again.',
+                          });
+                      },
+                      onClose: function () {
+                          // Handle modal close (you can customize this)
+                          // console.log("Payment modal closed");
+                      },
+                  },
+              };
+
+              // Initialize KhaltiCheckout with the configuration
+              const checkout = new KhaltiCheckout(khaltiConfig);
+
+              // Show the checkout dialog with the specified amount
+              checkout.show({ amount: donationAmount });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+              // The user cancelled the donation
+              Swal.fire({
+                  icon: 'info',
+                  title: 'Donation Cancelled',
+                  text: 'Your donation has been cancelled.',
+              });
+          }
+      });
+  });
+</script>
