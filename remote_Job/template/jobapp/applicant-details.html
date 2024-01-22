@@ -157,12 +157,11 @@
         text: `Email sent successfully! Candidate ${selectedButtonType === 'select' ? 'selected' : 'rejected'}.`,
         showConfirmButton: false,
 
-        timer: 2500
+        timer: 2000
       })
       .then(() => {
         // Close the modal after successful submission
         $('#emailPositionModal').modal('hide');
-        // Disable the button after successful submission
         
         // Reload the page after successful submission
         window.location.reload();

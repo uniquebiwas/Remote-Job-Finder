@@ -129,6 +129,9 @@ def user_logIn(request):
     If successful, log the user in and redirect to the appropriate success URL or homepage.
     If the request method is GET, display the login form.
     """
+    if request.user.is_authenticated:
+        # User is already logged in, redirect to the main page
+        return render(request, 'jobapp/index.html')
     if request.method == 'POST':
         form = UserLoginForm(request.POST, request=request)  # Pass the request object to the form
         if form.is_valid():
@@ -156,10 +159,8 @@ def user_logOut(request):
     messages.success(request, 'You are Successfully logged out')
     return redirect('account:login')
 
-# views.py
 
-
-@login_required
+@login_required(login_url=reverse_lazy('account:login'))
 def change_password(request):
     if request.method == 'POST':
         form = ChangePasswordForm(user=request.user, data=request.POST)
@@ -174,14 +175,11 @@ def change_password(request):
     return render(request, 'account/change_password.html', {'form': form})
 
 
-
-
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'account/password_reset_form.html'
     email_template_name = 'account/password_reset_email.html'
     success_url = reverse_lazy('account:password_reset_done')
     
-
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'account/password_reset_done.html'
 
@@ -200,7 +198,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'account/password_reset_complete.html'
-
 
 def activate_user(request, uidb64, token):
     try:

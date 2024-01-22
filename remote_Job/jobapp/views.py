@@ -511,7 +511,7 @@ def contact_us_view(request):
 #         return JsonResponse(response_data)
 #     else:
 #         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-
+@login_required(login_url=reverse_lazy('account:login'))
 def send_email(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -579,6 +579,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .models import Applicant, Job
 
+@login_required(login_url=reverse_lazy('account:login'))
 @require_POST
 def reject_all_applicants(request, job_id):
     try:

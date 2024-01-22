@@ -98,7 +98,7 @@
   </header>
 
   <!-- Add this script at the end of your HTML file or in a separate script file -->
-  <script>
+  <!-- <script>
     function showLogoutAlert() {
       Swal.fire({
         title: 'Logout Confirmation',
@@ -115,4 +115,42 @@
       });
     }
 
-  </script>
+  </script> -->
+
+<script>
+  function showLogoutAlert() {
+    Swal.fire({
+      title: 'Logout Confirmation',
+      text: 'Are you sure you want to log out?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, log me out!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Trigger a success toast before redirecting
+        showToast('success', 'Logout Successful!', 'You have been successfully logged out.');
+
+        // Simulate a delay for the user to see the toast
+        setTimeout(function() {
+          window.location.href = "{% url 'account:logout' %}";
+        }, 2000); // Adjust the delay time as needed
+      }
+    });
+  }
+
+  function showToast(icon, title, text) {
+    // Display a Toast notification
+    Swal.fire({
+      icon: icon,
+      title: title,
+      text: text,
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000 // Adjust the timer duration as needed
+    });
+  }
+</script>
+
