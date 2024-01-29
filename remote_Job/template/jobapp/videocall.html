@@ -1,0 +1,74 @@
+
+<html>
+
+<head>
+    <style>
+        #root {
+            width: 100vw;
+            height: 100vh;
+            }
+    </style>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+    
+
+</head>
+
+
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+<script>
+let roomID ;  // Default room ID
+window.onload = function () {
+    
+    function getUrlParams(url) {
+        let urlStr = url.split('?')[1];
+        const urlSearchParams = new URLSearchParams(urlStr);
+        const result = Object.fromEntries(urlSearchParams.entries());
+        return result;
+    }
+    // Get the 'id' parameter from the URLs
+    const urlParams = getUrlParams(window.location.href);
+    const idValue = urlParams['id'];
+    roomID=idValue;
+    console.log("Room ID:", roomID);
+    // const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
+    const userID = Math.floor(Math.random() * 10000) + "";
+    const userName = "{{ name }}"
+    const appID = 1971557050; // app id
+    const serverSecret = "7b2bbbf3675baac60fc6a9164a625884"; // secret key
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
+
+    
+        const zp = ZegoUIKitPrebuilt.create(kitToken);
+        zp.joinRoom({
+            container: document.querySelector("#root"),
+            sharedLinks: [{
+                name: 'Personal link',
+                url: window.location.protocol + '//' + window.location.host  + window.location.pathname + '?roomID=' + roomID,
+            }],
+            scenario: {
+                mode: ZegoUIKitPrebuilt.VideoConference,
+            },
+                
+           	turnOnMicrophoneWhenJoining: false,
+           	turnOnCameraWhenJoining: false,
+           	showMyCameraToggleButton: true,
+           	showMyMicrophoneToggleButton: true,
+           	showAudioVideoSettingsButton: true,
+           	showScreenSharingButton: true,
+           	showTextChat: true,
+           	showUserList: true,
+           	maxUsers: 50,
+           	layout: "Grid",
+           	showLayoutButton: true,
+         
+            });
+         
+}
+</script>
+
+</html>
+

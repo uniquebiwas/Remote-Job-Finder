@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HOME -->
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/bgrr.jpg' %}');" id="home-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7">
+        <h1 class="text-white font-weight-bold">JoinRoom</h1>
+        <div class="custom-breadcrumbs">
+          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+          <span class="text-white"><strong>JoinRoom</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form action="{% url 'jobapp:join_room' %}" method="POST" class="shadow p-5" style="margin-top: 40px; margin-bottom: 40px;">
+        <div
+                            style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -1;">
+                        </div>
+                        <div 
+                            style="position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.1); z-index: -2;">
+                        </div>
+                        <h2 class="mb-2 text-center" >Join Room</h2>
+        {% csrf_token %}
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Enter room ID" name="roomID">
+        </div>
+        <div class="form-group text-center">
+          <input type="submit" class="btn btn-primary" target="_blank" value="Join">
+        </div>
+        <center>
+          {% if success %}
+          <p style="color: green;"><b>{{ success }}</b></p>
+          {% endif %}
+          {% if error %}
+          <p style="color: red;">{{ error }}</p>
+          {% endif %}
+        </center>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

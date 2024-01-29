@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'adminlteui',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,13 +41,14 @@ INSTALLED_APPS = [
     'jobapp.apps.JobappConfig',
     'account.apps.AccountConfig',
 
+
     #3rd Party App
     'ckeditor',
     'taggit',
     'user_visit',
     'crispy_forms',
     "phonenumber_field",
-]
+    ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [

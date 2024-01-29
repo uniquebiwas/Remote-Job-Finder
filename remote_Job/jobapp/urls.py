@@ -20,7 +20,12 @@ urlpatterns = [
     path('about-us/', views.about_us_view, name='about_us'),
     path('contact-us/', views.contact_us_view, name='contact_us'),
     path('terms-condition/', views.terms_condition_view, name='terms-condition'),
+    path('courses/', views.courses_view, name='courses'),
     path('result/', views.search_result_view, name='search_result'),
+    path('course/<int:id>/', views.single_course_view, name='single-course'),
+    path('apply-course/<int:id>/', views.apply_course_view, name='apply-course'),
+    path('meeting/',views.videocall, name='meeting'),
+    path('join/',views.join_room, name='join_room'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/employer/job/<int:id>/applicants/', views.all_applicants_view, name='applicants'),
     path('dashboard/employer/job/edit/<int:id>', views.job_edit_view, name='edit-job'),
@@ -29,7 +34,6 @@ urlpatterns = [
     path('dashboard/employer/delete/<int:id>/', views.delete_job_view, name='delete'),
     path('dashboard/employee/delete-bookmark/<int:id>/', views.delete_bookmark_view, name='delete-bookmark'),
     path('send-email/', views.send_email, name='send_email'),
-    path('reject_all/<int:job_id>/', views.reject_all_applicants, name='reject_all_applicants'),
 
 
 ]

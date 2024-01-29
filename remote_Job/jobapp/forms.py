@@ -99,7 +99,10 @@ class JobForm(forms.ModelForm):
             job.save()
         return job
 
-
+class CourseApplyForm(forms.ModelForm):
+    class Meta:
+        model = Enrollment
+        fields = ['course']
 
 
 class JobApplyForm(forms.ModelForm):

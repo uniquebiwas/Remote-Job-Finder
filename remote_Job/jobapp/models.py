@@ -73,3 +73,35 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return self.author_name
+
+class Course(models.Model):
+    COURSE_TAGS = [
+        ('paid', 'Paid'),
+        ('free', 'Free'),
+            ]
+
+    name = models.CharField(max_length=255)
+    tag = models.CharField(max_length=10, choices=COURSE_TAGS, default='paid')
+    description = models.TextField()
+    document = models.FileField(upload_to='course_pdfs/', null=True, blank=True)
+    image = models.ImageField(upload_to='course_images',null=True,blank=True)
+    fee = models.CharField(max_length=255,null=True,blank=True)
+    shift = models.CharField(max_length=255,null=True,blank=True)
+    timestamp = models.DateTimeField(auto_now=True)
+    seat = models.IntegerField(null=True,blank=True)
+
+
+    def __str__(self):
+        return self.name
+
+
+
+
+class Enrollment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now=True, auto_now_add=False)
+    roomid = models.CharField(max_length=10, blank=True, null=True, default='')
+
+    def __str__(self):
+        return self.course.name

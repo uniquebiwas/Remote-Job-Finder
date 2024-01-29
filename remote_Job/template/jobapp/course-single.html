@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load is_course_already_applied %}
+{% block content %}
+<!-- HOME -->
+
+
+<section class="section-hero overlay inner-page bg-image"
+  style="background-image: url('{% static 'images/bgrr.jpg' %}');" id="home-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7">
+        <h1 class="text-white font-weight-bold">{{ course.name }}</h1>
+        <div class="custom-breadcrumbs">
+          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+          <a href="{% url 'jobapp:courses' %}">Courses</a> <span class="mx-2 slash">/</span>
+          <span class="text-white"><strong>{{ course.name }}</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="site-section">
+  <div class="container">
+    {% include 'messages.html' %}
+
+    <div class="row align-items-center mb-5">
+      <div class="col-lg-8 mb-5 mb-lg-0">
+        <div class="d-flex align-items-center">
+          <div class="border p-2 d-inline-block mr-5 mb-4 rounded">
+            <!-- <img src="{% static 'images/job_logo2.jpg' %}" alt="Image"> -->
+            <img src="{{ course.image.url }}" alt="Image" style="width: 250px; height: 150px; object-fit: fill; ">
+
+          </div>
+          <div>
+            <h2>{{ course.name }}</h2>
+            <div>
+              <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span><a href="#">{{ course.name }}</a></span> <br>
+              {% if course.tag == 'free' %}
+                  <span class="badge badge-success">
+                    Free 
+                  </span>
+                {% elif course.tag == 'paid'%}
+                <span class=" fa fa-sack-dollar "></span><strong class="text-black"> Fee: </strong><span class="badge badge-info">
+                  <i id="fee1"> </i>
+                  </span> 
+                 <br> <span class="mb-4 fa fa-clock "></span><strong class="text-black"> Our Shift:</strong> {{ course.shift }}
+
+                {% else  %}
+                  <span class="badge badge-info">
+                    None
+                  </span>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="row">
+          <div class="col-5">
+            {% if course.tag == 'paid' %}
+      {% is_course_already_applied course request.user as is_applied %}
+              {% if is_applied %}
+
+              <span  class="btn btn-block btn-danger btn-md">Enrolled</span>
+
+              {% else %}
+
+              {% if course.seat > 0 %}
+                <form id="applyForm" action="{% url 'jobapp:apply-course' course.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="course" value="{{ course.id }}">
+                    <input type="hidden" id="discount" name="discount_fee" value="">
+                    <input type="hidden" id="fee" name="fee" value="">
+                    <input type="hidden" id="discountedFeeInput" name="discounted_fee" value="">
+                    <button id="enrollButton" class="btn btn-block btn-primary btn-md" type="submit">Enroll Now</button>
+                </form>
+            {% else %}
+            <span disabled class="btn btn-block btn-success btn-md">Seat Full</span>
+
+            {% endif %}
+              {% endif %}
+              {% endif %}
+              </div>
+              </div>  
+              </div>
+              
+           
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="mb-5">
+          <!-- <figure class="mb-5"><img src="images/job_single_img_1.jpg" alt="Image" class="img-fluid rounded"></figure> -->
+          <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-align-left mr-3"></span>Course
+            Description</h3>
+          <p align="justify">{{ course.description | safe }}</p> 
+        </div>
+
+        
+
+      </div>
+      <div class="col-lg-4">
+        <div class="bg-light p-3 border rounded mb-4">
+          <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Course Details</h3>
+          <ul class="list-unstyled pl-3 mb-0">
+            <li class="mb-2"><strong class="text-black">Published on:</strong> {{ course.timestamp|date:"d M Y" }}</li>
+            <li class="mb-2"><strong class="text-black">Course Type:</strong>
+              {% if course.tag == 'free' %}
+              <span class="badge badge-success">
+                Free Course
+              </span> 
+                <li class="mb-2">
+                  <strong class="text-black">Download:</strong>
+                  <a href="{{ course.document.url }}"  id="pdfDownload" download="{{ course.name }}.pdf">
+                      <i class="fas fa-file-pdf fa-2x"></i>
+                  </a>
+              </li> 
+              <li class="mb-2"><strong class="text-black">Donate:</strong> <a href="#" id="donateButton"> <i class="fa-solid fa-money-check-dollar fa-xl"></i></a></li>
+
+              {% elif course.tag == 'paid'%}
+              <span class="badge badge-danger">
+                Paid Course
+              </span> 
+
+            <li class="mb-2"><strong class="text-black">Seats Available:</strong> <i class="fa-solid fa-people-line fa-xl"> {{course.seat}}</i></li>
+            <li class="mb-2">
+              <strong class="text-black">Syllabus:</strong>
+              <a href="{{ course.document.url }}"   download="{{ course.name }}.pdf">
+                  <i class="fas fa-file-pdf fa-2x"></i>
+              </a>
+          </li>
+              {% else  %}
+              None
+              {% endif %}
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-light p-3 border rounded">
+          <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Share</h3>
+          <div class="px-3">
+            <a href="https://www.facebook.com/unique.biwas.7/" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-facebook"></span></a>
+            <a href="https://twitter.com/BiwasUnique" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-twitter"></span></a>
+            <a href="https://www.linkedin.com/in/biwas-pudasaini-191435216/" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-linkedin"></span></a>
+            <a href="https://www.instagram.com/unique_biwas/" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-instagram"></span></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}
+{% block extra_scripts %}
+
+<script src="https://unpkg.com/khalti-checkout-web"></script>
+
+<script>
+  // Replace with your actual Khalti public key
+  const khaltiPublicKey = "test_public_key_317fc5e1da9448369da4e4d8d3e1bdfa";
+  // const khaltiPublicKey = "test_public_key_63359c1f736d4965b49f20dc91ccef1d";
+  // Event listener for the donation button
+  document.getElementById('donateButton').addEventListener('click', function () {
+      // Use SweetAlert to prompt the user for the donation amount
+      Swal.fire({
+          imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Khalti_Digital_Wallet_Logo.jpg/1200px-Khalti_Digital_Wallet_Logo.jpg?20180702123857",
+          imageWidth: 400,
+          imageHeight: 200,
+          imageAlt: "Custom image",
+          title: 'Enter Donation Amount',
+          input: 'number',
+          inputLabel: 'Amount (NPR)',
+          inputPlaceholder: 'Enter amount..',
+          showCancelButton: true,
+          confirmButtonText: 'Donate',
+          cancelButtonText: 'Cancel',
+          
+          inputValidator: (value) => {
+              // Validate the user input
+              return new Promise((resolve) => {
+                  if (value > 0) {
+                      resolve();
+                  } else {
+                      resolve('Please enter a valid donation amount.');
+                  }
+              });
+          }
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // The user entered a valid amount
+              const donationAmount = parseFloat(result.value);
+
+              // Create KhaltiCheckout configuration
+              const khaltiConfig = {
+                  publicKey: khaltiPublicKey,
+                  productIdentity: 1,
+                  productName: "Donation",
+                  productUrl: "#", // Replace with your website URL
+                  eventHandler: {
+                      onSuccess: function (payload) {
+                          // Handle successful payment (you can customize this)
+                          console.log("Payment successful", payload);
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'Donation Successful!',
+                              text: 'Thank you so much for your generous donation. Your support means a lot and will help us make a positive impact. We appreciate your kindness and commitment to our cause.',
+                          });
+                      },
+                      onError: function (error) {
+                          // Handle payment error (you can customize this)
+                          console.log("Payment error", error);
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Donation Failed',
+                              text: 'Something went wrong. Please try again.',
+                          });
+                      },
+                      onClose: function () {
+                          // Handle modal close (you can customize this)
+                          // console.log("Payment modal closed");
+                      },
+                  },
+              };
+
+              // Initialize KhaltiCheckout with the configuration
+              const checkout = new KhaltiCheckout(khaltiConfig);
+
+              // Show the checkout dialog with the specified amount
+              checkout.show({ amount: donationAmount });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+              // The user cancelled the donation
+              Swal.fire({
+                  icon: 'info',
+                  title: 'Donation Cancelled',
+                  text: 'Your donation has been cancelled.',
+              });
+          }
+      });
+  });
+</script>
+
+
+<script>
+  //  var fee = parseFloat("{{ course.fee }}");
+  var fee1 = new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR'}).format("{{ course.fee }}");
+  document.getElementById('fee1').innerText = fee1;
+  document.getElementById('applyForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      // Get the course fee from your Django template
+      var originalFee = parseFloat("{{ course.fee }}");
+      var discountedFee = originalFee;
+
+
+      // Prompt the user for the coupon code using Swal
+      Swal.fire({
+          imageUrl: "https://indian-retailer.s3.ap-south-1.amazonaws.com/s3fs-public/2022-10/Coupons.jpg",
+          imageWidth: 400,
+          imageHeight: 200,
+          imageAlt: "Custom image",
+          title: 'Apply Coupon Code',
+          input: 'text',
+          inputPlaceholder: 'Enter coupon code...',
+          showCancelButton: true,
+          confirmButtonText: 'Apply',
+          cancelButtonText: 'Cancel',
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Check the entered coupon code and apply discount
+              var couponCode = result.value.toLowerCase();
+              if (couponCode === 'learn10') {
+                  // Apply 10% discount
+                  discountedFee = originalFee - (originalFee * 0.10);
+              } else if (couponCode === 'learn15') {
+                  // Apply 15% discount
+                  discountedFee = originalFee - (originalFee * 0.15);
+              }
+
+              // Show a Swal confirmation with the updated fee
+              Swal.fire({
+                  imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Khalti_Digital_Wallet_Logo.jpg/1200px-Khalti_Digital_Wallet_Logo.jpg?20180702123857",
+                  imageWidth: 400,
+                  imageHeight: 200,
+                  imageAlt: "Custom image",
+                  title: 'Fee Details',
+                  html: '<p>Original Fee: NPR ' + originalFee + '</p>' +
+                      '<p>Discounted Fee: NPR ' + discountedFee + '</p>',
+                  confirmButtonText: 'Proceed to Payment',
+                  showCancelButton: true,
+                  cancelButtonText: 'Cancel',
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      // Create a Khalti configuration object
+                      var courseFee = Math.round(discountedFee); // Amount should be in paisa (multiply by 100)
+                      var config = {                        
+                          publicKey: 'test_public_key_317fc5e1da9448369da4e4d8d3e1bdfa',
+                          productIdentity: 'course_enrollment_' + Math.floor(Math.random() * 1000), // Use a unique identifier
+                          productName: 'Course Enrollment',
+                          productUrl: window.location.href,
+                          eventHandler: {
+                            onSuccess: function (payload) {
+                                  return new Promise((resolve) => {
+                                      // Handle successful payment (you can customize this)
+                                      console.log("Payment successful", payload);
+                                      // Submit the form after successful payment
+                                      var fee = new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR'}).format(originalFee);
+                                      var formattedFee = new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR'}).format(courseFee);
+                                      var discount = originalFee - courseFee;
+                                      var formattedDiscount = new Intl.NumberFormat('en-NP', { style: 'currency',currency: 'NPR' }).format(discount);
+                                      document.getElementById('discount').value=formattedDiscount;
+                                      document.getElementById('fee').value=fee;
+                                      document.getElementById('discountedFeeInput').value = formattedFee;
+                                      document.getElementById('applyForm').submit();
+                                      // Show Swal alert and resolve the Promise when "OK" is clicked
+                                      
+                                  });
+                              },
+                              onError: function (error) {
+                                  // Handle payment error (you can customize this)
+                                  console.log("Payment error", error);
+                                  alert('Payment failed. Please try again.');
+                              },
+                              onClose: function () {
+                                  // Handle modal close (you can customize this)
+                                  console.log("Payment modal closed");
+                              },
+                          },
+                          paymentPreference: ['KHALTI', 'CONNECT_IPS'],
+                          productAmount: courseFee,
+                      };
+
+                      // Initialize Khalti Checkout with the configuration
+                      var checkout = new KhaltiCheckout(config);
+
+                      // Open the Khalti Checkout modal
+                      checkout.show({ amount: courseFee });
+                  }
+              });
+          }
+      });
+  });
+</script>
+
+
+
+
+{% endblock %}

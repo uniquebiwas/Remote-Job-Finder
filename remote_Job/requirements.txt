@@ -13,4 +13,4 @@ user-agents==2.2.0
 phonenumbers
 django-phonenumber_field
 pillow
-django-adminlte-ui
+django-jazzmin
