@@ -249,6 +249,7 @@ def dashboard_view(request):
     jobs = []
     savedjobs = []
     appliedjobs = []
+    appliedcourses=[]
     total_applicants = {}
     
     if request.user.role == 'employer':
@@ -262,11 +263,14 @@ def dashboard_view(request):
         # For employees, fetch saved jobs and applied jobs
         savedjobs = BookmarkJob.objects.filter(user=request.user.id)
         appliedjobs = Applicant.objects.filter(user=request.user.id)
+        appliedcourses = Enrollment.objects.filter(user=request.user.id)
+
     
     context = {
         'jobs': jobs,
         'savedjobs': savedjobs,
         'appliedjobs': appliedjobs,
+        'appliedcourses':appliedcourses,
         'total_applicants': total_applicants
     }
 
@@ -430,6 +434,49 @@ def about_us_view(request):
 def terms_condition_view(request):
     return render(request, 'jobapp/terms-condition.html')
 
+@login_required(login_url=reverse_lazy('account:login'))
+# View to handle serach and display courses
+def courses_view(request):
+    # Retrieve search query from the GET parameters
+    search_query = request.GET.get('search', '')
+
+    # If a search query is provided, filter courses by name
+    if search_query:
+        courses = Course.objects.filter(name__icontains=search_query).order_by('-timestamp')
+    else:
+        # Otherwise, retrieve all courses and order by timestamp
+        courses = Course.objects.all().order_by('timestamp')
+    # Create a paginator for the course list
+    paginator = Paginator(courses, 4)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Check if there are no results
+    no_results = not page_obj.object_list.exists()
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'no_results':no_results,
+    }
+
+    return render(request, 'jobapp/courses.html', context)
+
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employee
+def single_course_view(request, id):
+    """
+    View to provide the ability to view job details.
+    """
+
+    course = get_object_or_404(Course, id=id)
+
+
+    context = {
+        'course': course,
+
+    }
+      # Render the HTML template with the context data
+    return render(request, 'jobapp/course-single.html', context)
 # View to handle the contact us form
 def contact_us_view(request):
     if request.method == 'POST':
@@ -574,18 +621,82 @@ def send_email(request):
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employee
+# from django.template.loader import render_to_string
 
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from .models import Applicant, Job
+def apply_course_view(request, id):
+    """
+    View to allow users to apply for a course and send an email on success.
+    """
+
+    form = CourseApplyForm(request.POST or None)
+    user = get_object_or_404(User, id=request.user.id)
+    enrollment = Enrollment.objects.filter(user=user, course=id)
+
+    if not enrollment:
+        if request.method == 'POST':
+            discount_fee = request.POST.get('discount_fee')
+            discounted_fee = request.POST.get('discounted_fee')
+            fee = request.POST.get('fee')
+            # print(discounted_fee)
+
+            if form.is_valid():
+                course = get_object_or_404(Course, id=id)
+
+                # Check if there are available seats
+                if course.seat > 0:
+                    instance = form.save(commit=False)
+                    instance.user = user
+                    instance.save()
+
+                    # Decrease available seat count
+                    course.seat -= 1
+                    course.save()
+
+                    # Modify this line in the apply_course_view function
+                    template_data = {
+                        'user': user,
+                        'course': course,
+                        'original_fee': fee,  #fee
+                        'discount_fee': discount_fee, #discount fee
+                        'discounted_fee':discounted_fee,  # discounted fee
+                    }
+
+
+                    # Render the email template with additional data
+                    email_content = render_to_string('jobapp/course_mail.html', template_data)
+
+                    
+                    # Send an email to the user using EmailMessage
+                    email = EmailMessage(
+                        'Course Application Confirmation',
+                        email_content,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [user.email],
+                    )
+                    email.content_subtype = 'html'  # Set the content type to HTML
+                    email.send(fail_silently=False)
+
+                    messages.success(request, 'You have successfully applied for this course! Check your email for confirmation.')
+                    return redirect(reverse("jobapp:single-course", kwargs={'id': id}))
+                else:
+                    messages.error(request, 'Sorry, no available seats for this course.')
+                    return redirect(reverse("jobapp:single-course", kwargs={'id': id}))
+        else:
+            return redirect(reverse("jobapp:single-course", kwargs={'id': id}))
+    else:
+        messages.error(request, 'You already applied for the course!')
+        return redirect(reverse("jobapp:single-course", kwargs={'id': id}))
+
+@login_required(login_url=reverse_lazy('RJadmin:login'))
+def videocall(request):
+    return render(request, 'jobapp/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
 
 @login_required(login_url=reverse_lazy('account:login'))
-@require_POST
-def reject_all_applicants(request, job_id):
-    try:
-        # Update the status for all applicants related to the specific job to "Rejected"
-        job = Job.objects.get(pk=job_id)
-        job.applicant_set.exclude(status="Selected").update(status="Rejected")
-        return JsonResponse({'message': 'All applicants for the job rejected successfully'})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+@user_is_employee
+def join_room(request):
+    if request.method == 'POST':
+        id = request.POST['roomID']
+        return redirect("/meeting?id=" + id)
+    return render(request, 'jobapp/joinroom.html')

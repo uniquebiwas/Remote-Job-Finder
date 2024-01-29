@@ -1,0 +1,80 @@
+{% load i18n %}
+{% load static %}
+
+{% autoescape off %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <title>Payment Receipt</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; color: #333;">
+
+    <div style="background-color: #f5f5f5; padding: 20px; text-align: center;">
+
+        <!-- Text as a logo with inline CSS styling -->
+        <h3 style="color: #1c9800; font-size: 24px; font-weight: bold; margin-bottom: 10px;">Remote Job Finder Course</h3>
+        <h4 style="color: #333333;">Payment Receipt</h4>
+
+        <!-- Course Status Content -->
+        <p align="justify">
+            Dear {{ user.first_name }},
+            <br>
+            Congratulations! You have successfully enrolled in the course. Kindly check your dashboard's course section for roomId, and be sure to check the roomId 15 minutes before the scheduled time. <p>Happy learning!</p> 
+
+            <h3> Here are the details: </h3>
+
+            <!-- Add border directly to the table elements -->
+            <table style="border-collapse: collapse; width: 100%; margin-top: 20px; border: 1px solid #333;">
+                <tr style="border: 1px solid #333;">
+                    <td style="border: 1px solid #333; padding: 8px;"><strong>Course Name:</strong></td>
+                    <td style="border: 1px solid #333; padding: 8px;">{{ course.name }}</td>
+                </tr>
+                <tr style="border: 1px solid #333;">
+                    <td style="border: 1px solid #333; padding: 8px;"><strong>Course Shift:</strong></td>
+                    
+                        <td style="border: 1px solid #333; padding: 8px;"><span class="badge badge-info">{{course.shift}}</span></td>
+                                    </tr>
+                <tr style="border: 1px solid #333;">
+                    <td style="border: 1px solid #333; padding: 8px;"><strong>Original Fee:</strong></td>
+                    <td style="border: 1px solid #333; padding: 8px;"> {{ original_fee }}</td>
+                </tr>
+                <tr style="border: 1px solid #333;">
+                    <td style="border: 1px solid #333; padding: 8px;"><strong>Discount:</strong></td>
+                    <td style="border: 1px solid #333; padding: 8px;"> <span style="color: red;"> {{ discount_fee }}</span> </td>
+                </tr>
+                <tr style="border: 1px solid #333;">
+                    <td style="border: 1px solid #333; padding: 8px;"><strong>Total Paid:</strong></td>
+                    <td style="border: 1px solid #333; padding: 8px;"> {{ discounted_fee }}</td>
+                </tr>
+            </table>
+
+            <em>
+                If your inquiry is urgent or requires immediate attention, please feel free to contact us directly at 9868204063. Otherwise, rest assured that we will carefully review and See you in the online session.
+            </em>
+        </p>
+
+        <!-- Regards Section -->
+        <div style="margin-top: 20px; text-align: left; padding: 20px; color: #333333;">
+            <p>Regards,<br>Remote Job Finder
+                <br>Bhaktapur, Nepal<br>9868204063</p>
+        </div>
+
+    </div>
+
+    <!-- Footer Section -->
+    <div style="text-align: center; background-color: #333333; padding: 10px; color: white;">
+        <p style="margin: 0;">Copyright&copy; 2023, Remote Job Finder. All Rights Reserved.</p>
+    </div>
+
+</body>
+
+</html>
+
+{% endautoescape %}

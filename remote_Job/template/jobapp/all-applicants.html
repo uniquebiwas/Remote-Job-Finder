@@ -69,9 +69,7 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <div class="">
-                            <button class="btn btn-danger" onclick="rejectAll()">Reject All</button>
-                        </div>
+                        
                     </div>
         
                 </div>
@@ -80,67 +78,6 @@
     </div>
 
 </section>
-<script>
-function rejectAll() {
-    // Extract job ID from the current URL
-    var jobId = window.location.pathname.match(/\/job\/(\d+)\/applicants\//)[1];
 
-    // Display a confirmation alert using SweetAlert
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'This will reject all applicants for the job!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, reject all!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // If user confirms, make an AJAX request to update the database
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "{% url 'jobapp:reject_all_applicants' 0 %}".replace('0', jobId), true);
-            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    // Update the status in the table on success
-                    var table = document.querySelector('.table');
-                    var rows = table.querySelectorAll('tbody tr');
-
-                    rows.forEach(function (row) {
-                        var statusCell = row.querySelector('td:nth-child(4)');
-                        var currentStatus = statusCell.textContent.trim();
-
-                        if (currentStatus === "Pending") {
-                            statusCell.innerHTML = '<span class="badge badge-danger px-2">Rejected</span>';
-                        }
-                    });
-
-                    // Show success alert
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'All pending applicants for the job rejected successfully.',
-                        icon: 'success'
-                    }).then(() => {
-                        // Reload the page after the user clicks "OK" on the success alert
-                        location.reload();
-                    });
-                } else {
-                    // Show error alert
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Error updating applicants.',
-                        icon: 'error'
-                    });
-                }
-            };
-
-            xhr.send();
-        }
-    });
-}
-
-
-</script>
 
 {% endblock %}

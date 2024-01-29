@@ -23,3 +23,15 @@ def user_is_employee(function):
             raise PermissionDenied
 
     return wrap
+
+
+def user_is_course(function):
+
+    def wrap(request, *args, **kwargs):    
+
+        if request.user.role == 'course':
+            return function(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
+
+    return wrap

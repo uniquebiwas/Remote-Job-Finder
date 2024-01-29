@@ -144,6 +144,8 @@ class UserLoginForm(forms.Form):
 
             if not user.is_active:
                raise forms.ValidationError("Your account is not yet active. Please wait for activation.")
+            if user.role.lower() == 'course':
+                raise forms.ValidationError("Login not allowed for users with role 'course'.")
         if not remember_me:
             # If "Remember Me" is not checked, set session expiry to 0 (session ends when the browser is closed)
             self.request.session.set_expiry(0)
