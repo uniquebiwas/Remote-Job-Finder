@@ -26,7 +26,7 @@ class TestimonialAdmin(admin.ModelAdmin):
 admin.site.register(Testimonial, TestimonialAdmin)
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'tag', 'description',)
+    list_display = ('name', 'tag', )
     list_filter = ('tag',)
     search_fields = ('name', 'description',)
 admin.site.register(Course,CourseAdmin)

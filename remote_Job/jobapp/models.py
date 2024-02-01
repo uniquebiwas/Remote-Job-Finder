@@ -50,7 +50,7 @@ class Applicant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True, auto_now_add=False)
-    status = models.CharField(max_length=10, blank=True, null=True)
+    status = models.CharField(max_length=10, blank=True, null=True,default="Pending")
 
     def __str__(self):
         return self.job.title
@@ -82,7 +82,7 @@ class Course(models.Model):
 
     name = models.CharField(max_length=255)
     tag = models.CharField(max_length=10, choices=COURSE_TAGS, default='paid')
-    description = models.TextField()
+    description = RichTextField()
     document = models.FileField(upload_to='course_pdfs/', null=True, blank=True)
     image = models.ImageField(upload_to='course_images',null=True,blank=True)
     fee = models.CharField(max_length=255,null=True,blank=True)
