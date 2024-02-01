@@ -359,7 +359,8 @@ def applicant_details_view(request, id):
 
     context = {
         'applicant': applicant,
-        'job_title': applicant1.job.title
+        'job_title': applicant1.job.title,
+        'applicant1':applicant1
     }
 
     return render(request, 'jobapp/applicant-details.html', context)
