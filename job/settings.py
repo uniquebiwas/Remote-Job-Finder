@@ -56,6 +56,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #dependency added
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -154,12 +155,22 @@ EMAIL_HOST_PASSWORD = 'onky iwgz ibip oyho'
 # Optionally, you can set the default 'from' address for outgoing emails
 DEFAULT_FROM_EMAIL = 'remotejob007@gmail.com'
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
+
+# STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+
+
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR/'staticfiles' #specify the directory where the collectstatic command will collect all the static files 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" #dependency whitenoise
+# used to specify additional directories from which to load static files
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static')
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
