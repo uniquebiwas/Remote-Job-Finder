@@ -10,5 +10,5 @@ python3.9 manage.py migrate
 python3.9 manage.py collectstatic --noinput
 
 
-echo "Collecting Media Files..."
+# echo "Collecting Media Files..."
 python3.9 manage.py collectstatic --noinput --ignore=*.js,*.css,*.scss,*.html,*.txt
