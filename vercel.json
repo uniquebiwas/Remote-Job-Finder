@@ -20,7 +20,7 @@
       "dest": "/static/$1"
     },
     {
-      "src": "/media/(.*)",  
+      "src": "/media/(.*)",
       "dest": "/media/$1"
     },
     {
