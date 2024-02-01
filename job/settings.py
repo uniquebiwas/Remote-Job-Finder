@@ -155,21 +155,15 @@ EMAIL_HOST_PASSWORD = 'onky iwgz ibip oyho'
 # Optionally, you can set the default 'from' address for outgoing emails
 DEFAULT_FROM_EMAIL = 'remotejob007@gmail.com'
 
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "static"),
-# ]
-
-# STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-
-
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR/'staticfiles' #specify the directory where the collectstatic command will collect all the static files 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" #dependency whitenoise
-# used to specify additional directories from which to load static files
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, "static"),
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+ 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" #dependency whitenoise
+
 
 
 MEDIA_URL = "/media/"
