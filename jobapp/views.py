@@ -640,6 +640,7 @@ def apply_course_view(request, id):
             discount_fee = request.POST.get('discount_fee')
             discounted_fee = request.POST.get('discounted_fee')
             fee = request.POST.get('fee')
+            tax_num = request.POST.get('tax_num')
             # print(discounted_fee)
 
             if form.is_valid():
@@ -662,6 +663,7 @@ def apply_course_view(request, id):
                         'original_fee': fee,  #fee
                         'discount_fee': discount_fee, #discount fee
                         'discounted_fee':discounted_fee,  # discounted fee
+                        'tax_num':tax_num,
                     }
 
 
