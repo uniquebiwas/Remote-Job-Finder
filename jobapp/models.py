@@ -8,6 +8,8 @@ from ckeditor.fields import RichTextField
 from taggit.managers import TaggableManager
 
 
+
+
 JOB_TYPE = (
     ('1', "Full time"),
     ('2', "Part time"),
@@ -22,6 +24,7 @@ class Category(models.Model):
     
 
 class Job(models.Model):
+
     user = models.ForeignKey(User, related_name='User', on_delete=models.CASCADE) 
     title = models.CharField(max_length=300)
     description = RichTextField()
