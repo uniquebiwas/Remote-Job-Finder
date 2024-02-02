@@ -75,6 +75,7 @@
                     <input type="hidden" name="course" value="{{ course.id }}">
                     <input type="hidden" id="discount" name="discount_fee" value="">
                     <input type="hidden" id="fee" name="fee" value="">
+                    <input type="hidden" id="tax_num" name="tax_num" value="">
                     <input type="hidden" id="discountedFeeInput" name="discounted_fee" value="">
                     <button id="enrollButton" class="btn btn-block btn-primary btn-md" type="submit">Enroll Now</button>
                 </form>
@@ -254,7 +255,10 @@
       var originalFee = parseFloat("{{ course.fee }}");
       var discountedFee = originalFee;
 
+      var randomNumber = Math.floor(Math.random() * 90000000) + 10000000;
 
+      // Combine with "RJ" at the beginning
+      var tax_num = "RJ-" + randomNumber;
       // Prompt the user for the coupon code using Swal
       Swal.fire({
           imageUrl: "https://indian-retailer.s3.ap-south-1.amazonaws.com/s3fs-public/2022-10/Coupons.jpg",
@@ -310,6 +314,9 @@
                                       var formattedFee = new Intl.NumberFormat('en-NP', { style: 'currency', currency: 'NPR'}).format(courseFee);
                                       var discount = originalFee - courseFee;
                                       var formattedDiscount = new Intl.NumberFormat('en-NP', { style: 'currency',currency: 'NPR' }).format(discount);
+                                
+                                      
+                                      document.getElementById('tax_num').value=tax_num;
                                       document.getElementById('discount').value=formattedDiscount;
                                       document.getElementById('fee').value=fee;
                                       document.getElementById('discountedFeeInput').value = formattedFee;
