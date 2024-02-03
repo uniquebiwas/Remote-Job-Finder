@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'etdq)uvq=t0rc&ams5_ovn6w8bcwknjj0u97*(#n^(76x*+dr1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -86,23 +86,23 @@ WSGI_APPLICATION = 'job.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': '4B5cGB2d36A46bCeb*bEd3Ed25bGfbbf',
-        'HOST': 'viaduct.proxy.rlwy.net',
-        'PORT': '21525',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': '4B5cGB2d36A46bCeb*bEd3Ed25bGfbbf',
+#         'HOST': 'viaduct.proxy.rlwy.net',
+#         'PORT': '21525',
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -165,16 +165,12 @@ EMAIL_HOST_PASSWORD = 'onky iwgz ibip oyho'
 # Optionally, you can set the default 'from' address for outgoing emails
 DEFAULT_FROM_EMAIL = 'remotejob007@gmail.com'
 
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "static"),
-# ]
-
-# STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-
 STATIC_URL = '/static/'
-STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
  
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" #dependency whitenoise
 
