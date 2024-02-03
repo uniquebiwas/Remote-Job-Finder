@@ -86,23 +86,23 @@ WSGI_APPLICATION = 'job.wsgi.application'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'railway',
-#         'USER': 'postgres',
-#         'PASSWORD': '4B5cGB2d36A46bCeb*bEd3Ed25bGfbbf',
-#         'HOST': 'viaduct.proxy.rlwy.net',
-#         'PORT': '21525',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '4B5cGB2d36A46bCeb*bEd3Ed25bGfbbf',
+        'HOST': 'viaduct.proxy.rlwy.net',
+        'PORT': '21525',
+    }
+}
 
 # DATABASES = {
 #     'default': {
