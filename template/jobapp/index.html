@@ -316,6 +316,33 @@ $("#ajax_listing_paginattion" ).delegate( "a#ajax_paginator", "click", function(
   
   
 	</script>
+
+
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+
+
+<style>
+  df-messenger {
+   --df-messenger-bot-message: #878fac;
+   --df-messenger-button-titlebar-color: #1baebe;
+   --df-messenger-chat-background-color: #fafafa;
+   --df-messenger-font-color: white;
+   --df-messenger-send-icon: #878fac;
+   --df-messenger-user-message: #479b3d;
+  }
+</style>
+
+ <!-- Dialogflow Messenger integration with Bootstrap styles -->
+ <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+ <df-messenger
+   intent="WELCOME"
+   chat-title="Chat With Us"
+   agent-id="57b1ef66-9258-492b-8e9e-48c87754d6cf"
+   language-code="en"
+   wait-open
+   chat-icon="https://static.vecteezy.com/system/resources/previews/022/796/186/original/notification-bell-illustration-3d-free-png.png"
+ ></df-messenger>
+
 {% endblock %}
 
 
