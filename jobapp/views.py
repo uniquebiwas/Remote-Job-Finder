@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 import json
+import requests
+from datetime import datetime
 from django.core.mail import EmailMessage
 from account.models import User
 from jobapp.forms import *
@@ -624,7 +626,6 @@ def send_email(request):
 
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employee
-# from django.template.loader import render_to_string
 
 def apply_course_view(request, id):
     """
@@ -691,6 +692,10 @@ def apply_course_view(request, id):
     else:
         messages.error(request, 'You already applied for the course!')
         return redirect(reverse("jobapp:single-course", kwargs={'id': id}))
+
+
+
+
 
 @login_required(login_url=reverse_lazy('RJadmin:login'))
 def videocall(request):
