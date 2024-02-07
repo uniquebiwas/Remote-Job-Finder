@@ -7,8 +7,9 @@ __pycache__
 
 # Backup files # 
 *.bak 
-*.pyc 
-
+*.pyc
+..env 
+/env/
 # Ignore .env files
 env/
 env
