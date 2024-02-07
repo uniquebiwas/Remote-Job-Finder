@@ -42,6 +42,6 @@ jobs:
 
       - name: SSH into Google Cloud VM
         run: |
-          ssh -v np03cs4m210080@34.16.179.250 'sudo docker container prune -f && sudo docker container prune -f && sudo docker pull uniquebiwas/test_remotejob:latest && sudo docker stop test_remotejob_container && sudo docker rm test_remotejob_container && sudo docker run -d --name test_remotejob_container -p 80:8000 uniquebiwas/test_remotejob:latest'
+          ssh -v np03cs4m210080@34.16.179.250 'sudo docker container prune -f && sudo docker image prune -f && sudo docker pull uniquebiwas/test_remotejob:latest && sudo docker stop test_remotejob_container && sudo docker rm test_remotejob_container && sudo docker run -d --name test_remotejob_container -p 80:8000 uniquebiwas/test_remotejob:latest'
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

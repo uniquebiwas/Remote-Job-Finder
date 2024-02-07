@@ -28,8 +28,25 @@
               <span class="p-4" data-toggle="modal" data-target="#emailPositionModal" onclick="setButtonType('reject')"><i class="fa-solid fa-circle-xmark  fa-beat fa-2xl" style="color: #da0707;"></i></span>
           </div>
           {%elif applicant1.status == "Selected"%}
+          <div class="d-flex">
+            <span class="p-4" data-toggle="modal" disabled>
+                <i class="fa-solid fa-circle-check fa fa-2xl" style="color: #3cda10;"></i>
+            </span>
+            <span class="p-4" data-toggle="modal"  disabled>
+                <i class="fa-solid fa-circle-xmark fa fa-2xl" style="color: #da0707;"></i>
+            </span>
+        </div>
+        
           <span class="badge badge-success px-4 mx-4">Already {{applicant1.status}} </span>
           {%else%}
+          <div class="d-flex">
+            <span class="p-4" data-toggle="modal" disabled>
+                <i class="fa-solid fa-circle-check fa fa-2xl" style="color: #3cda10;"></i>
+            </span>
+            <span class="p-4" data-toggle="modal"  disabled>
+                <i class="fa-solid fa-circle-xmark fa fa-2xl" style="color: #da0707;"></i>
+            </span>
+        </div>
           <span class="badge badge-danger px-4 mx-4">Already {{applicant1.status}} </span>
           {%endif%}
           
