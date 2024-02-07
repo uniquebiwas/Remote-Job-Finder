@@ -28,7 +28,7 @@
 
     <div class="row align-items-center mb-5">
       <div class="col-lg-8 mb-5 mb-lg-0">
-        <div class="d-flex align-items-center">
+        <div class="align-items-center  d-lg-flex">
           <div class="border p-2 d-inline-block mr-5 mb-4 rounded">
             <!-- <img src="{% static 'images/job_logo2.jpg' %}" alt="Image"> -->
             <img src="{{ course.image.url }}" alt="Image" style="width: 250px; height: 150px; object-fit: fill; ">
@@ -62,7 +62,7 @@
         <div class="row">
           <div class="col-5">
             {% if course.tag == 'paid' %}
-      {% is_course_already_applied course request.user as is_applied %}
+            {% is_course_already_applied course request.user as is_applied %}
               {% if is_applied %}
 
               <span  class="btn btn-block btn-danger btn-md">Enrolled</span>
@@ -85,73 +85,71 @@
             {% endif %}
               {% endif %}
               {% endif %}
-              </div>
-              </div>  
-              </div>
-              
-           
-    <div class="row">
-      <div class="col-lg-8">
-        <div class="mb-5">
-          <!-- <figure class="mb-5"><img src="images/job_single_img_1.jpg" alt="Image" class="img-fluid rounded"></figure> -->
-          <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-align-left mr-3"></span>Course
-            Description</h3>
-          <div align="justify">{{ course.description | safe }}</div> 
-        </div>
-
-        
-
-      </div>
-      <div class="col-lg-4">
-        <div class="bg-light p-3 border rounded mb-4">
-          <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Course Details</h3>
-          <ul class="list-unstyled pl-3 mb-0">
-            <li class="mb-2"><strong class="text-black">Published on:</strong> {{ course.timestamp|date:"d M Y" }}</li>
-            <li class="mb-2"><strong class="text-black">Course Type:</strong>
-              {% if course.tag == 'free' %}
-              <span class="badge badge-success">
-                Free Course
-              </span> 
-                <li class="mb-2">
-                  <strong class="text-black">Download:</strong>
-                  <a href="{{ course.document.url }}"  id="pdfDownload" download="{{ course.name }}.pdf">
-                      <i class="fas fa-file-pdf fa-2x"></i>
-                  </a>
-              </li> 
-              <li class="mb-2"><strong class="text-black">Donate:</strong> <a href="#" id="donateButton"> <i class="fa-solid fa-money-check-dollar fa-xl"></i></a></li>
-
-              {% elif course.tag == 'paid'%}
-              <span class="badge badge-danger">
-                Paid Course
-              </span> 
-
-            <li class="mb-2"><strong class="text-black">Seats Available:</strong> <i class="fa-solid fa-people-line fa-xl"> {{course.seat}}</i></li>
-            <li class="mb-2">
-              <strong class="text-black">Syllabus:</strong>
-              <a href="{{ course.document.url }}"   download="{{ course.name }}.pdf">
-                  <i class="fas fa-file-pdf fa-2x"></i>
-              </a>
-          </li>
-              {% else  %}
-              None
-              {% endif %}
-            </li>
-          </ul>
-        </div>
-
-        <div class="bg-light p-3 border rounded">
-          <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Share</h3>
-          <div class="px-3">
-            <a href="https://www.facebook.com/unique.biwas.7/" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-facebook"></span></a>
-            <a href="https://twitter.com/BiwasUnique" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-twitter"></span></a>
-            <a href="https://www.linkedin.com/in/biwas-pudasaini-191435216/" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-linkedin"></span></a>
-            <a href="https://www.instagram.com/unique_biwas/" class="pt-3 pb-3 pr-3 pl-0"><span class="icon-instagram"></span></a>
           </div>
-        </div>
-
+        </div>  
       </div>
+              
+      <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-5">
+                    <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-align-left mr-3"></span>Course Description</h3>
+                    <div align="justify">{{ course.description | safe }}</div>
+                </div>
+            </div>
+    
+            <div class="col-lg-4">
+                <div class="bg-light p-3 border rounded mb-4">
+                    <h3 class="text-primary mt-3 h5 pl-3 mb-3">Course Details</h3>
+                    <ul class="list-unstyled pl-3 mb-0">
+                        <li class="mb-2"><strong class="text-black">Published on:</strong> {{ course.timestamp|date:"d M Y" }}</li>
+                        <li class="mb-2"><strong class="text-black">Course Type:</strong>
+                            {% if course.tag == 'free' %}
+                            <span class="badge badge-success">Free Course</span>
+                            <li class="mb-2">
+                                <strong class="text-black">Download:</strong>
+                                <a href="{{ course.document.url }}" id="pdfDownload" download="{{ course.name }}.pdf">
+                                    <i class="fas fa-file-pdf fa-2x"></i>
+                                </a>
+                            </li>
+                            <li class="mb-2"><strong class="text-black">Donate:</strong> <a href="#" id="donateButton"> <i
+                                        class="fa-solid fa-money-check-dollar fa-xl"></i></a></li>
+    
+                            {% elif course.tag == 'paid'%}
+                            <span class="badge badge-danger">Paid Course</span>
+    
+                            <li class="mb-2"><strong class="text-black">Seats Available:</strong> <i
+                                    class="fa-solid fa-people-line fa-xl"> {{course.seat}}</i></li>
+                            <li class="mb-2">
+                                <strong class="text-black">Syllabus:</strong>
+                                <a href="{{ course.document.url }}" download="{{ course.name }}.pdf">
+                                    <i class="fas fa-file-pdf fa-2x"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            None
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+    
+                <div class="bg-light p-3 border rounded">
+                    <h3 class="text-primary mt-3 h5 pl-3 mb-3">Share</h3>
+                    <div class="px-3">
+                        <a href="https://www.facebook.com/unique.biwas.7/" class="pt-3 pb-3 pr-3 pl-0"><span
+                                class="icon-facebook"></span></a>
+                        <a href="https://twitter.com/BiwasUnique" class="pt-3 pb-3 pr-3 pl-0"><span
+                                class="icon-twitter"></span></a>
+                        <a href="https://www.linkedin.com/in/biwas-pudasaini-191435216/" class="pt-3 pb-3 pr-3 pl-0"><span
+                                class="icon-linkedin"></span></a>
+                        <a href="https://www.instagram.com/unique_biwas/" class="pt-3 pb-3 pr-3 pl-0"><span
+                                class="icon-instagram"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+    
 </section>
 
 {% endblock content %}

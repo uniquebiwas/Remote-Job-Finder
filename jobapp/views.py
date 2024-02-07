@@ -11,7 +11,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 import json
-import requests
 from datetime import datetime
 from django.core.mail import EmailMessage
 from account.models import User
