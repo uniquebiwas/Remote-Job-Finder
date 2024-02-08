@@ -278,8 +278,8 @@
             </div>
             <div class="modal-body">
                 <!-- Add course name and user name with unique identifiers -->
-                <input readonly type="" name="course_name_{{ course.id }}" value="{{ course.course.name }}">
-                <input readonly type="" name="user_name_{{ course.id }}" value="{{ course.user.get_full_name }}">
+                <input readonly type="hidden" name="course_name_{{ course.id }}" value="{{ course.course.name }}">
+                <input readonly type="hidden" name="user_name_{{ course.id }}" value="{{ course.user.get_full_name }}">
                 <textarea class="form-control" id="feedbackText_{{ course.id }}" placeholder="Enter feedback"></textarea>
             </div>
             <div class="modal-footer">
