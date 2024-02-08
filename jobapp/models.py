@@ -107,3 +107,11 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return self.course.name
+
+class Feedback(models.Model):
+    user_name = models.CharField(blank=True, null=True,max_length=255)
+    course_name = models.CharField(blank=True, null=True,max_length=255)
+    feedback_text = models.TextField()
+
+    def __str__(self):
+        return f'{self.user_name} - Feedback'

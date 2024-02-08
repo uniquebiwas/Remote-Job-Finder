@@ -1,6 +1,6 @@
 from .forms import TestimonialForm, CourseForm
 from django.contrib.auth.decorators import login_required
-from jobapp.models import Testimonial, Course, Enrollment
+from jobapp.models import Testimonial, Course, Enrollment,Feedback
 from .forms import TestimonialForm, CourseForm
 from django.contrib import messages
 from django.contrib import auth
@@ -41,10 +41,11 @@ def admin_page(request):
 
     # Fetch all courses
     all_courses = Course.objects.all()
-
+    all_feedbacks = Feedback.objects.all()
     return render(request, 'RJadmin/admin.html', {
         'course_form': course_form,
-        'all_courses': all_courses  # Pass all courses to the template
+        'all_courses': all_courses , # Pass all courses to the template
+        'all_feedbacks':all_feedbacks
     })
 
 

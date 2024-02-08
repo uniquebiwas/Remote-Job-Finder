@@ -234,7 +234,15 @@
                                                 <a  href="{% url 'jobapp:join_room' %}" target="_blank"><button id="join"  class="btn btn-info btn-sm" role="button">
                                                     Join Room
                                                 </button></a>
-                                                {% endif %}</td>
+                                                {% endif %}
+                                                <!-- Add this inside your table, within the loop -->
+                                                
+                                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#feedbackModal_{{ course.id }}">
+                                                        Give Feedback
+                                                    </button>
+                                                    
+                                                </td>
+
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -255,6 +263,84 @@
     </div>
     </div>
 </section>
+{% csrf_token %}
+
+{% for course in appliedcourses %}
+<!-- Modal -->
+<div class="modal fade" id="feedbackModal_{{ course.id }}" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">Feedback for {{ course.course.name }} </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Add course name and user name with unique identifiers -->
+                <input readonly type="" name="course_name_{{ course.id }}" value="{{ course.course.name }}">
+                <input readonly type="" name="user_name_{{ course.id }}" value="{{ course.user.get_full_name }}">
+                <textarea class="form-control" id="feedbackText_{{ course.id }}" placeholder="Enter feedback"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- Pass course id to the submitFeedback function -->
+                <button type="button" class="btn btn-primary" onclick="submitFeedback('{{ course.id }}')">Submit Feedback</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script>
+    function submitFeedback(course_id) {
+        var feedbackText = $('#feedbackText_' + course_id).val();
+        var courseName = $('input[name="course_name_' + course_id + '"]').val();  // Retrieve course name with unique identifier
+        var userName = $('input[name="user_name_' + course_id + '"]').val();  // Retrieve user name with unique identifier
+
+        $.ajax({
+            type: 'POST',
+            url: window.location.pathname,  // Submit to the same URL as the current page
+            data: {
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                'course_name': courseName,
+                'user_name': userName,
+                'feedbackText': feedbackText
+            },
+            success: function (data) {
+                if (data.success) {
+                    // Use SweetAlert for success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Feedback submitted successfully',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#feedbackModal_' + course_id).modal('hide');
+                            location.reload();
+                        }
+                    });
+                } else {
+                    // Use SweetAlert for error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error submitting feedback',
+                    });
+                }
+            },
+            error: function () {
+                // Use SweetAlert for general error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error submitting feedback',
+                });
+            }
+        });
+    }
+</script>
+
+
 <!-- Popup with Bootstrap classes -->
 <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="popupLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -274,6 +360,7 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block extra_scripts %}
@@ -282,6 +369,7 @@
  
 
 <script>
+    
     function showPopup(roomId) {
         // Set the content of the popup with the room ID
         document.getElementById('popupContent').innerHTML = `<p>Dear participants,</p>
@@ -303,6 +391,8 @@
         $('#popup').modal('show');
     }
 </script>
+
+
 {% endblock %}
 
 

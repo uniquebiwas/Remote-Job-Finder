@@ -265,7 +265,18 @@ def dashboard_view(request):
         savedjobs = BookmarkJob.objects.filter(user=request.user.id)
         appliedjobs = Applicant.objects.filter(user=request.user.id)
         appliedcourses = Enrollment.objects.filter(user=request.user.id)
+    if request.method == 'POST':
+        feedback_text = request.POST.get('feedbackText')
+        course_name = request.POST.get('course_name')
+        user_name = request.POST.get('user_name')
+        # print(course_name)
 
+        if feedback_text and course_name and user_name:
+            feedback = Feedback.objects.create(course_name=course_name, user_name=user_name, feedback_text=feedback_text)
+            feedback.save()
+            return JsonResponse({'success': True, 'message': 'Feedback submitted successfully'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Error submitting feedback'})
     
     context = {
         'jobs': jobs,
@@ -276,6 +287,7 @@ def dashboard_view(request):
     }
 
     return render(request, 'jobapp/dashboard.html', context)
+
 
 # View to delete a job post
 @login_required(login_url=reverse_lazy('account:login'))

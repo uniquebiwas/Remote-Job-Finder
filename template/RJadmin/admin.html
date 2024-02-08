@@ -79,21 +79,22 @@
     </style>
     <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
     <script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script> 
+    
 
 </head>
 
 <body>
-    <nav class="navbar fixed-top navbar-expand-lg">
-        <a class="navbar-brand" href=".">{{request.user.first_name}} {{request.user.last_name}}</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="{% url 'RJadmin:admin_page' %}">{{ request.user.first_name }} {{ request.user.last_name }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
-
+    
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                 <!-- New nav section for Courses -->
-                 <li class="nav-item">
+                <!-- Existing list items -->
+                <li class="nav-item">
                     <a class="nav-link" href="javascript:void(0);" onclick="showCourses()">Courses</a>
                 </li>
                 <li class="nav-item">
@@ -103,14 +104,18 @@
                     <a class="nav-link" href="javascript:void(0);" onclick="showForm('add-course')">Add Course</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0);" onclick="showForm('view-feedback')">Feedbacks</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'RJadmin:change_password' %}">Change Password</a>
                 </li>
-                
-               
+
             </ul>
-            <a href="#" onclick="showLogoutAlert()" class="btn btn-outline-danger text-white" style="background-color: rgb(155, 1, 1);">Logout</a>
+            <a href="#" onclick="showLogoutAlert()" class="btn btn-outline-danger text-white"
+                style="background-color: rgb(155, 1, 1);">Logout</a>
         </div>
     </nav>
+    
 
     <div class="container">
 
@@ -242,21 +247,58 @@
             
             
         </div>
+
+        <div id="view-feedback" style="display: none;">
+            <h2>View All User Feedbacks</h2>
+            <input type="text" class="form-control mb-4" id="searchInput1" placeholder="Search for user feedbacks">
+        
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Course Name</th>
+                        <th>User Name</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feedback in all_feedbacks %}
+                    <tr id="feedback{{ feedback.id }}">
+                        <td>{{ feedback.course_name }}</td>
+                        <td>{{ feedback.user_name }}</td>
+                        <td>{{ feedback.feedback_text }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         
         
-    </div>
+        
+</div>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#searchInput1").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#view-feedback tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>
 
+    
     <script>
         function showForm(formId) {
             // Hide all forms and courses
             document.getElementById('all-courses').style.display = 'none';
             document.getElementById('add-course').style.display = 'none';
             document.getElementById('courses').style.display = 'none';
+            document.getElementById('view-feedback').style.display = 'none';
 
 
             // Show the selected form
@@ -269,6 +311,7 @@
             document.getElementById('courses').style.display = 'block';
             document.getElementById('all-courses').style.display = 'none';
             document.getElementById('add-course').style.display = 'none';
+            document.getElementById('view-feedback').style.display = 'none';
 
         }
     </script>
