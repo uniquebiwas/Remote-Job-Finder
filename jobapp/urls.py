@@ -34,6 +34,7 @@ urlpatterns = [
     path('dashboard/employer/delete/<int:id>/', views.delete_job_view, name='delete'),
     path('dashboard/employee/delete-bookmark/<int:id>/', views.delete_bookmark_view, name='delete-bookmark'),
     path('send-email/', views.send_email, name='send_email'),
+    
 
 
 ]

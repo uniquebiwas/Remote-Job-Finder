@@ -83,25 +83,23 @@
 </head>
 
 <body>
-    <nav class="navbar fixed-top navbar-expand-lg">
-        <a class="navbar-brand" href="#">Course Admin</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'RJadmin:admin_page' %}">{{ request.user.first_name }} {{ request.user.last_name }}</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
-
+    
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
-                 <!-- New nav section for Courses -->
-                 <li class="nav-item">
-                    <a class="nav-link " href="{% url 'RJadmin:admin_page' %}">Courses</a>
+                <!-- New nav section for Courses -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'RJadmin:admin_page' %}">Courses</a>
                 </li>
-               
-               
             </ul>
             <a href="#" onclick="showLogoutAlert()" class="btn btn-outline-danger text-white" style="background-color: rgb(155, 1, 1);">Logout</a>
         </div>
     </nav>
+    
 
 
 

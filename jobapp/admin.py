@@ -35,3 +35,8 @@ class EnrollmentAdmin(admin.ModelAdmin):
     list_display = ('course','user','roomid','timestamp')
     
 admin.site.register(Enrollment,EnrollmentAdmin)
+
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ('user_name', 'course_name','feedback_text')
+    
+admin.site.register(Feedback,FeedbackAdmin)
