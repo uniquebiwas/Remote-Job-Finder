@@ -80,6 +80,14 @@
     <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
     <script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script> 
     
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 </head>
 
@@ -109,12 +117,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'RJadmin:change_password' %}">Change Password</a>
                 </li>
-
             </ul>
             <a href="#" onclick="showLogoutAlert()" class="btn btn-outline-danger text-white"
                 style="background-color: rgb(155, 1, 1);">Logout</a>
         </div>
+        
+        </a>
     </nav>
+    
     
 
     <div class="container">
@@ -500,5 +510,6 @@
         }
     });
 </script>
+
 </body>
 </html>
