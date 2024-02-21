@@ -178,16 +178,16 @@ def change_password(request):
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'account/password_reset_form.html'
     email_template_name = 'account/password_reset_email.html'
+    html_email_template_name = 'account/password_reset_email.html'
     success_url = reverse_lazy('account:password_reset_done')
-    
+
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'account/password_reset_done.html'
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     form_class = CustomPasswordResetConfirmForm
     template_name = 'account/password_reset_confirm.html'
-    success_url = reverse_lazy('account:login')  #  the login URL
-
+    success_url = reverse_lazy('account:login') 
     def form_valid(self, form):
         response = super().form_valid(form)
         
