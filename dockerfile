@@ -21,7 +21,7 @@ COPY --from=builder /app /app
 RUN rm -v /etc/nginx/nginx.conf
 
 # Copy custom Nginx configuration
-COPY nginx/nginx.conf /etc/nginx/
+COPY app/nginx/nginx.conf /etc/nginx/
 
 # Copy Django static files
 RUN python manage.py collectstatic --noinput
