@@ -15,8 +15,10 @@ RUN apk --no-cache add build-base && \
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Stage 2: Production
 FROM nginx:alpine
+
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the static files collected by Django
 COPY --from=build /usr/src/app/static /usr/share/nginx/html
@@ -26,3 +28,4 @@ EXPOSE 80
 
 # The default command to start Nginx when the container runs
 CMD ["nginx", "-g", "daemon off;"]
+
