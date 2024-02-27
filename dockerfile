@@ -1,33 +1,26 @@
 # Stage 1: Build
-FROM python:3.9-alpine AS builder
+FROM python:3.9-alpine AS build
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY . /app
+COPY . /usr/src/app
 
 # Install dependencies
 RUN apk --no-cache add build-base && \
     pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Production
+# Use Nginx as the base image for serving static files
 FROM nginx:alpine
 
-COPY --from=builder /app /app
+# Copy the built app from the previous stage to the Nginx public directory
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
 
-# Remove default Nginx configuration
-RUN rm -v /etc/nginx/nginx.conf
-
-# Copy custom Nginx configuration
-COPY app/nginx/nginx.conf /etc/nginx/
-
-# Copy Django static files
-RUN python manage.py collectstatic --noinput
-
-# Expose port 80
+# Expose port 80 for the Nginx server
 EXPOSE 80
 
-# CMD to start Nginx
+# The default command to start Nginx when the container runs
 CMD ["nginx", "-g", "daemon off;"]
+
