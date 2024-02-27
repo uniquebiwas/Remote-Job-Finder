@@ -13,22 +13,21 @@ RUN apk --no-cache add build-base && \
     pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Production
-FROM python:3.9-alpine
+FROM nginx:alpine
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
-
-WORKDIR /app
-
-# Copy the application and dependencies from the builder stage
 COPY --from=builder /app /app
 
-# Install additional dependencies if needed (e.g., psycopg2 for PostgreSQL)
-# RUN apk --no-cache add postgresql-libs && \
-#     pip install --no-cache-dir psycopg2-binary
+# Remove default Nginx configuration
+RUN rm -v /etc/nginx/nginx.conf
 
-# Expose port 8000
-EXPOSE 8000
+# Copy custom Nginx configuration
+COPY nginx/nginx.conf /etc/nginx/
 
-# CMD to start the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Copy Django static files
+RUN python manage.py collectstatic --noinput
+
+# Expose port 80
+EXPOSE 80
+
+# CMD to start Nginx
+CMD ["nginx", "-g", "daemon off;"]
