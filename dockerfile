@@ -19,7 +19,7 @@ RUN python manage.py collectstatic --noinput
 FROM nginx:alpine
 
 # Copy the static files collected by Django
-COPY --from=build /usr/src/app/staticfiles /usr/share/nginx/html
+COPY --from=build /usr/src/app/static /usr/share/nginx/html
 
 # Expose port 80 for the Nginx server
 EXPOSE 80
