@@ -12,11 +12,14 @@ COPY . /usr/src/app
 RUN apk --no-cache add build-base && \
     pip install --no-cache-dir -r requirements.txt
 
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
 # Stage 2: Production
 FROM nginx:alpine
 
-# Copy the built static files from the previous stage to the Nginx public directory
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+# Copy the static files collected by Django
+COPY --from=build /usr/src/app/staticfiles /usr/share/nginx/html
 
 # Expose port 80 for the Nginx server
 EXPOSE 80
