@@ -1,21 +1,34 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9
+# Stage 1: Build
+FROM python:3.9-alpine AS builder
 
-# Set environment variables
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-# Set the working directory to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN apk --no-cache add build-base && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Make port 8000 available to the world outside this container
+# Stage 2: Production
+FROM python:3.9-alpine
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+WORKDIR /app
+
+# Copy the application and dependencies from the builder stage
+COPY --from=builder /app /app
+
+# Install additional dependencies if needed (e.g., psycopg2 for PostgreSQL)
+# RUN apk --no-cache add postgresql-libs && \
+#     pip install --no-cache-dir psycopg2-binary
+
+# Expose port 8000
 EXPOSE 8000
 
-# Define the command to run your application
+# CMD to start the application
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
