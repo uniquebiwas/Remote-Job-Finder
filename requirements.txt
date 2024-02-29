@@ -17,3 +17,4 @@ django-jazzmin
 psycopg2-binary==2.9.5
 python-decouple==3.6
 whitenoise
+numpy~=1.26.2
