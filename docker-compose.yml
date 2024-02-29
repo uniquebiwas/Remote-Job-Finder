@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     container_name: remotejob_container
-    image: mremotejob-container_image
+    image: uniquebiwas/mremotejob-container_image
     build:
       context: .
       dockerfile: Dockerfile
