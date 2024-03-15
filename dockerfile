@@ -11,6 +11,6 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed packages specified in requirements.txtbb
-RUN pip install -r .\requirements.txt
+RUN pip install -r requirements.txt
 
 
