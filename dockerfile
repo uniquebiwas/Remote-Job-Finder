@@ -10,7 +10,7 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
+# Install any needed packages specified in requirements.txtbb
 RUN pip install --no-cache-dir --index-url https://pypi.python.org/simple/ -r requirements.txt
 
 
