@@ -32,8 +32,9 @@ pipeline {
         stage('Login to Docker Hub and Push to Docker Hub') {
             steps {
                 script {
+                    def ver = env.BRANCH_NAME.replaceAll("refs/tags/", "")
                     // Tag the Docker image with the latest tag
-                    // sh "docker tag uniquebiwas/remotejobimage:$ver uniquebiwas/remotejobimage:$ver"
+                    sh "docker tag uniquebiwas/remotejobimage:$ver uniquebiwas/remotejobimage:$ver"
 
                     // Login to Docker Hub and push the Docker image
                     withCredentials([usernamePassword(credentialsId: "dockerHub", passwordVariable: "dockerpass", usernameVariable: "user")]) {
