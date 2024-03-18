@@ -24,7 +24,7 @@ pipeline {
                     def ver = env.BRANCH_NAME.replaceAll("refs/tags/", "")
                     echo "Tag Name: $ver"
                     // Build the Docker image
-                    sh "docker build -t uniquebiwas/remotejobimage:$ver -f dockerfile"
+                    sh "docker build -t uniquebiwas/remotejobimage:$ver ."
                 }
             }
         }
