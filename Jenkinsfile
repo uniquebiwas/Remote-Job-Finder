@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image and run the container 
-                    sh 'docker-compose up'
+                    sh 'docker build -t uniquebiwas/remotejobimage:latest .'
 
 
                 }
