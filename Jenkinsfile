@@ -24,7 +24,7 @@ pipeline {
                     def tag = env.BRANCH_NAME.replaceAll("refs/tags/", "")
                     echo "Tag Name: $tag"
                     // Build the Docker image
-                    sh 'docker build -t uniquebiwas/remotejobimage:latest .'
+                    sh 'docker build -t uniquebiwas/remotejobimage:$tag .'
                 }
             }
         }
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     // Tag the Docker image with the latest tag
-                    sh 'docker tag uniquebiwas/remotejobimage:latest uniquebiwas/remotejobimage:$tag'
+                    sh 'docker tag uniquebiwas/remotejobimage:$tag uniquebiwas/remotejobimage:$tag'
 
                     // Login to Docker Hub and push the Docker image
                     withCredentials([usernamePassword(credentialsId: "dockerHub", passwordVariable: "dockerpass", usernameVariable: "user")]) {
