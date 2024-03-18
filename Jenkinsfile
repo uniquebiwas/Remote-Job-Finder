@@ -22,8 +22,8 @@ pipeline {
             steps {
                 script {
                     // Stop and remove the existing container if it exists
-                    sh 'docker-compose down || true'
-                    sh 'pip install --upgrade pip'
+                    // sh 'docker-compose down || true'
+                    // sh 'pip install --upgrade pip'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
         stage('Build and Run') {
             steps {
                 script {
-                    // Build the Docker image and run the container
+                    // Build the Docker image and run the container 
                     sh 'docker build -t remotejobimage:latest -f Dockerfile .'
 
 
