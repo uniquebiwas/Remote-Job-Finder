@@ -32,7 +32,8 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image and run the container
-                    sh 'docker-compose up -d'
+                    sh 'docker build -t remotejobimage:latest -f Dockerfile .'
+
 
                 }
             }
