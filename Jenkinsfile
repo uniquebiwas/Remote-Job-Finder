@@ -18,15 +18,6 @@ pipeline {
             }
         }
 
-        stage('Stop and Remove Container') {
-            steps {
-                script {
-                    // Stop and remove the existing container if it exists
-                    // sh 'docker-compose down || true'
-                    // sh 'pip install --upgrade pip'
-                }
-            }
-        }
 
         stage('Build and Run') {
             steps {
