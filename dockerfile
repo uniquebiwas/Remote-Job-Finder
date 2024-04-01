@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM python:3.9-alpine AS build
+FROM python:3.10-alpine AS build
 # Set environment variables
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
