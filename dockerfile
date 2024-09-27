@@ -27,10 +27,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the installed dependencies from the build stage
-COPY --from=build /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-COPY --from=build /usr/local/bin /usr/local/bin
-
 # Copy the application code from the build stage
 COPY --from=build /app /app
 
