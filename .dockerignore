@@ -1,1 +1,59 @@
-env
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Ignore configuration files
+*.env
+.env.*
+
+# Ignore Dockerfile and Docker-related files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Ignore version control files and folders
+.git
+.gitignore
+.gitattributes
+.github/
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+
+# Ignore log files
+*.log
+logs/
+
+# Ignore test and coverage results
+.coverage
+*.cover
+*.log
+*.tmp
+*.out
+*.xml
+test/
+tests/
+
+# Ignore temporary files created by the system
+*.swp
+*~
+*.bak
+*.tmp
+*.temp
+*.orig
+.DS_Store
+
+# Ignore build directories
+build/
+dist/
+*.egg-info/
+.eggs/
