@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app
 
 # Stage 2: Final Image
-FROM python:3.10-slim  # Using the same base image for compatibility
+FROM python:3.10-slim  
 
 # Set environment variables again for the final stage
 ENV PYTHONUNBUFFERED=1
