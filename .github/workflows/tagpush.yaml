@@ -1,4 +1,4 @@
-name: CI/CD with Docker in Google Cloud VM
+name: CI/CD with Docker 
 
 on:
   push:
