@@ -29,7 +29,6 @@
 #           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
 
-
 name: CI/CD with Docker and Argo CD Update
 
 on:
@@ -65,20 +64,20 @@ jobs:
       - name: Checkout Argo CD GitOps Repo
         uses: actions/checkout@v3
         with:
-          repository: uniquebiwas/k8s-services  
+          repository: uniquebiwas/k8s-services
           path: argocd_repo
 
       - name: Update Kubernetes manifest with new image tag
         run: |
-          cd argocd_repo/rmjob  # Navigate to the correct path in your repository
+          cd argocd_repo/rmjob
           sed -i "s|image: uniquebiwas/test_remotejob:.*|image: uniquebiwas/test_remotejob:${TAG}|" deployment.yaml
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add deployment.yaml
           git commit -m "Update image tag to ${TAG}"
-          git push
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/uniquebiwas/k8s-services.git HEAD:main
 
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for pushing the changes
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided by GitHub Actions
