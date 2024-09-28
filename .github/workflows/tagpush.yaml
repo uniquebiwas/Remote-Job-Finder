@@ -34,43 +34,49 @@ name: CI/CD with Docker and Argo CD Update
 on:
   push:
     tags:
-      - '*'
+      - '*'  # Trigger on tag creation
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the current repository (where workflow is defined)
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Step 2: Set up Python (if required by your environment)
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: 3.8
 
+      # Step 3: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      # Step 4: Build and push Docker image to Docker Hub
       - name: Build and Push Docker Image
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           docker build -t uniquebiwas/test_remotejob:$TAG .
           docker push uniquebiwas/test_remotejob:$TAG
 
+      # Step 5: Checkout the Argo CD repository where `deployment.yaml` exists
       - name: Checkout Argo CD GitOps Repo
         uses: actions/checkout@v3
         with:
-          repository: uniquebiwas/k8s-services
-          path: argocd_repo
+          repository: uniquebiwas/k8s-services  # Points to your k8s-services repo
+          path: argocd_repo  # Checkout to this path
 
+      # Step 6: Update the image tag in the Kubernetes manifest (deployment.yaml)
       - name: Update Kubernetes manifest with new image tag
         run: |
-          cd argocd_repo/rmjob
-          sed -i "s|image: uniquebiwas/test_remotejob:.*|image: uniquebiwas/test_remotejob:${TAG}|" deployment.yaml
+          cd argocd_repo/rmjob  # Navigate to the path containing deployment.yaml
+          sed -i "s|image: uniquebiwas/test_remotejob:.*|image: uniquebiwas/test_remotejob:${TAG}|" deployment.yaml  # Update the image tag
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add deployment.yaml
@@ -80,4 +86,4 @@ jobs:
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided by GitHub Actions
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Provided by GitHub Actions automatically
