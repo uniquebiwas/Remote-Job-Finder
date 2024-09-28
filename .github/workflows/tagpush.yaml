@@ -1,4 +1,36 @@
-name: CI/CD with Docker 
+# name: CI/CD with Docker 
+
+# on:
+#   push:
+#     tags:
+#       - '*'
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: 3.8
+
+#       - name: Build and Push Docker Image
+#         run: |
+#           TAG=${GITHUB_REF#refs/tags/}
+#           docker build -t uniquebiwas/test_remotejob:$TAG .
+#           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+#           docker push uniquebiwas/test_remotejob:$TAG
+#         env:
+#           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+#           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+
+
+name: CI/CD with Docker and Argo CD Update
 
 on:
   push:
@@ -11,19 +43,42 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.8
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and Push Docker Image
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           docker build -t uniquebiwas/test_remotejob:$TAG .
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker push uniquebiwas/test_remotejob:$TAG
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Checkout Argo CD GitOps Repo
+        uses: actions/checkout@v3
+        with:
+          repository: uniquebiwas/k8s-services  
+          path: argocd_repo
+
+      - name: Update Kubernetes manifest with new image tag
+        run: |
+          cd argocd_repo/rmjob  # Navigate to the correct path in your repository
+          sed -i "s|image: uniquebiwas/test_remotejob:.*|image: uniquebiwas/test_remotejob:${TAG}|" deployment.yaml
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add deployment.yaml
+          git commit -m "Update image tag to ${TAG}"
+          git push
+
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for pushing the changes
