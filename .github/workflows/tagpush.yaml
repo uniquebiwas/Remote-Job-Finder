@@ -1,50 +1,50 @@
-name: CI/CD with Docker
+# name: CI/CD with Docker
 
-on:
-  push:
-    tags:
-      - '*'
+# on:
+#   push:
+#     tags:
+#       - '*'
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
+#       - name: Set up Python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: 3.8
 
-      - name: Build and Push Docker Image
-        run: |
-          TAG=${GITHUB_REF#refs/tags/}
-          docker build -t uniquebiwas/test_remotejob:$TAG .
-          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker push uniquebiwas/test_remotejob:$TAG
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+#       - name: Build and Push Docker Image
+#         run: |
+#           TAG=${GITHUB_REF#refs/tags/}
+#           docker build -t uniquebiwas/test_remotejob:$TAG .
+#           echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+#           docker push uniquebiwas/test_remotejob:$TAG
+#         env:
+#           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+#           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan 20.70.239.117 >> ~/.ssh/known_hosts
+#       - name: Configure SSH
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           ssh-keyscan 20.70.239.117 >> ~/.ssh/known_hosts
 
-      - name: SSH into Remote VM
-        run: |
-          TAG=${GITHUB_REF#refs/tags/}
-          ssh -v azureuser@20.70.239.117 << EOF
-            sudo docker container prune -f
-            sudo docker image prune -f
-            sudo docker pull uniquebiwas/test_remotejob:$TAG
-            sudo docker stop test_remotejob_container || true
-            sudo docker rm test_remotejob_container || true
-            sudo docker run -d --name test_remotejob_container -p 80:8000 uniquebiwas/test_remotejob:$TAG
-          EOF
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#       - name: SSH into Remote VM
+#         run: |
+#           TAG=${GITHUB_REF#refs/tags/}
+#           ssh -v azureuser@20.70.239.117 << EOF
+#             sudo docker container prune -f
+#             sudo docker image prune -f
+#             sudo docker pull uniquebiwas/test_remotejob:$TAG
+#             sudo docker stop test_remotejob_container || true
+#             sudo docker rm test_remotejob_container || true
+#             sudo docker run -d --name test_remotejob_container -p 80:8000 uniquebiwas/test_remotejob:$TAG
+#           EOF
+#         env:
+#           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
