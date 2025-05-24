@@ -5,8 +5,7 @@ pipeline {
     HARBOR_URL     = "harbor.biwaspudasaini.info.np"
     HARBOR_PROJECT = "myproject"
     IMAGE_NAME     = ""
-    IS_TAG         = "false"
-    GIT_TAG        = ""
+    IMAGE_TAG      = ""  // You can default this to a branch name or timestamp
   }
 
   stages {
@@ -18,35 +17,17 @@ pipeline {
           // Get image name from repo
           env.IMAGE_NAME = env.GIT_URL.tokenize('/').last().replace('.git','')
 
-          // Fetch tags
-          sh "git fetch --tags"
-
-          // Check if this is a tag push
-          env.IS_TAG = sh(script: "git describe --tags --exact-match > /dev/null 2>&1 && echo true || echo false", returnStdout: true).trim()
-        }
-      }
-    }
-
-    stage('Validate Tag') {
-      when {
-        expression { env.IS_TAG == 'true' }
-      }
-      steps {
-        script {
-          env.GIT_TAG = sh(script: "git describe --tags --exact-match", returnStdout: true).trim()
-          echo "Detected tag: ${env.GIT_TAG}"
+          // Set tag to short commit hash or branch name
+          env.IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
         }
       }
     }
 
     stage('Build and Push Docker Image') {
-      when {
-        expression { env.IS_TAG == 'true' }
-      }
       steps {
         withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
           script {
-            def imageTag = "${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_TAG}"
+            def imageTag = "${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.IMAGE_TAG}"
             sh """
               docker build -t ${imageTag} .
               echo "Logging into Harbor"
@@ -60,11 +41,8 @@ pipeline {
     }
 
     stage('Say Hello') {
-      when {
-        expression { env.IS_TAG == 'true' }
-      }
       steps {
-        echo "Hello 👋 - Image pushed for tag: ${env.GIT_TAG}"
+        echo "Hello 👋 - Image pushed for commit/tag: ${env.IMAGE_TAG}"
       }
     }
 
