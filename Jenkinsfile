@@ -2,23 +2,24 @@ pipeline {
   agent any
 
   environment {
-    HARBOR_URL = "harbor.biwaspudasaini.info.np"
+    HARBOR_URL     = "harbor.biwaspudasaini.info.np"
     HARBOR_PROJECT = "myproject"
-    BRANCH_NAME = "release"         // Branch to clone
-    IMAGE_NAME = ""                 // Will be set dynamically
-    IS_TAG = "false"
-  }
-
-  triggers {
-    githubPush()
+    IMAGE_NAME     = ""
+    IS_TAG         = "false"
+    GIT_TAG        = ""
   }
 
   stages {
     stage('Clone Repo') {
       steps {
         script {
-          git branch: env.BRANCH_NAME, url: 'https://github.com/uniquebiwas/Remote-Job-Finder.git'
+          git url: 'https://github.com/uniquebiwas/Remote-Job-Finder.git'
+
+          // Get image name from repo
           env.IMAGE_NAME = env.GIT_URL.tokenize('/').last().replace('.git','')
+
+          // Fetch tags
+          sh "git fetch --tags"
 
           // Check if this is a tag push
           env.IS_TAG = sh(script: "git describe --tags --exact-match > /dev/null 2>&1 && echo true || echo false", returnStdout: true).trim()
@@ -32,9 +33,8 @@ pipeline {
       }
       steps {
         script {
-          // Fetch the tag name
           env.GIT_TAG = sh(script: "git describe --tags --exact-match", returnStdout: true).trim()
-          echo "This is a tagged commit: ${env.GIT_TAG}"
+          echo "Detected tag: ${env.GIT_TAG}"
         }
       }
     }
@@ -47,7 +47,6 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'harbor-creds', usernameVariable: 'HARBOR_USER', passwordVariable: 'HARBOR_PASS')]) {
           script {
             def imageTag = "${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_TAG}"
-            
             sh """
               docker build -t ${imageTag} .
               echo "Logging into Harbor"
@@ -57,6 +56,15 @@ pipeline {
             """
           }
         }
+      }
+    }
+
+    stage('Say Hello') {
+      when {
+        expression { env.IS_TAG == 'true' }
+      }
+      steps {
+        echo "Hello 👋 - Image pushed for tag: ${env.GIT_TAG}"
       }
     }
 
