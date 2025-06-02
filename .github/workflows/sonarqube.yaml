@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -30,5 +31,55 @@ jobs:
           args: >
             -Dsonar.projectKey=my-repo
         env:
-          SONAR_HOST_URL: https://636f-103-129-135-38.ngrok-free.app/
+          SONAR_HOST_URL: https://636f-103-129-135-38.ngrok-free.app
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Wait for SonarQube analysis to complete
+        run: sleep 10
+
+      - name: Check SonarQube Quality Gate status
+        id: quality_gate
+        run: |
+          echo "Fetching the analysis ID..."
+          analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+            "${{ env.SONAR_HOST_URL }}/api/ce/component?component=my-repo" \
+            | jq -r '.queue[0].id')
+
+          echo "Analysis ID: $analysis_id"
+
+          echo "Fetching the Quality Gate status..."
+          status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+            "${{ env.SONAR_HOST_URL }}/api/qualitygates/project_status?analysisId=$analysis_id" \
+            | jq -r '.projectStatus.status')
+
+          echo "Quality Gate status: $status"
+
+          echo "quality_gate_status=$status" >> "$GITHUB_OUTPUT"
+
+          if [[ "$status" != "OK" ]]; then
+            echo "❌ Quality Gate failed!"
+            exit 1
+          else
+            echo "✅ Quality Gate passed!"
+          fi
+        env:
+          SONAR_HOST_URL: https://636f-103-129-135-38.ngrok-free.app
+
+      - name: Send Slack Notification
+        run: |
+          status="${{ steps.quality_gate.outputs.quality_gate_status }}"
+          if [[ "$status" == "OK" ]]; then
+            message="✅ SonarQube Quality Gate passed for *${{ github.repository }}* on branch *${{ github.ref_name }}*"
+          else
+            message="❌ SonarQube Quality Gate failed for *${{ github.repository }}* on branch *${{ github.ref_name }}*"
+          fi
+
+          payload=$(jq -n \
+            --arg text "$message" \
+            '{text: $text}')
+
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
