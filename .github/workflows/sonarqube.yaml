@@ -1,4 +1,3 @@
-# .github/workflows/sonarqube.yml
 name: SonarQube Scan
 
 on:
@@ -40,10 +39,10 @@ jobs:
       - name: Check SonarQube Quality Gate status
         id: quality_gate
         run: |
-          echo "Fetching the analysis ID..."
+          echo "Fetching the latest analysis ID from project_analyses/search..."
           analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-            "${{ env.SONAR_HOST_URL }}/api/ce/component?component=my-repo" \
-            | jq -r '.queue[0].id')
+            "${{ env.SONAR_HOST_URL }}/api/project_analyses/search?project=my-repo" \
+            | jq -r '.analyses[0].key')
 
           echo "Analysis ID: $analysis_id"
 
