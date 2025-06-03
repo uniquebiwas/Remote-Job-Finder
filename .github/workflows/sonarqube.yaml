@@ -52,6 +52,7 @@ jobs:
           
             if [[ -n "$analysis_id" && "$analysis_id" != "null" ]]; then
               echo "Analysis ID found: $analysis_id"
+              echo "analysis_id=$analysis_id" >> "$GITHUB_OUTPUT"
               break
             else
               echo "Analysis ID not found yet (attempt $i). Retrying in 12 seconds..."
@@ -82,21 +83,50 @@ jobs:
         env:
           SONAR_HOST_URL: http://66.45.225.232:9000
 
-      - name: Send Slack Notification
-        run: |
-          status="${{ steps.quality_gate.outputs.quality_gate_status }}"
-          if [[ "$status" == "OK" ]]; then
-            message="✅ SonarQube Quality Gate passed for *${{ github.repository }}* on branch *${{ github.ref_name }}*"
-          else
-            message="❌ SonarQube Quality Gate failed for *${{ github.repository }}* on branch *${{ github.ref_name }}*"
-          fi
-
-          payload=$(jq -n \
-            --arg text "$message" \
-            '{text: $text}')
-
-          curl -X POST -H 'Content-type: application/json' \
-            --data "$payload" \
-            "${{ secrets.SLACK_WEBHOOK_URL }}"
+      - name: Send Slack Notification with Details
         env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: http://66.45.225.232:9000
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          analysis_id="${{ steps.quality_gate.outputs.analysis_id }}"
+          quality_gate_json=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/qualitygates/project_status?analysisId=$analysis_id")
+          
+          project_name=$(echo "$quality_gate_json" | jq -r '.projectStatus.projectName')
+          gate_name=$(echo "$quality_gate_json" | jq -r '.projectStatus.qualityGate.name')
+          status=$(echo "$quality_gate_json" | jq -r '.projectStatus.status')
+          
+          # Extract conditions (metric, status, actual value)
+          conditions=$(echo "$quality_gate_json" | jq -r '.projectStatus.conditions[] | "\(.metricKey): \(.status) (value: \(.actualValue // "N/A"))"')
+          
+          # Fetch extra metrics from measures API (hotspots reviewed, coverage, duplications)
+          measures_json=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=rmjob-project&metricKeys=security_hotspots_reviewed,coverage,duplicated_lines_density")
+          
+          hotspots_reviewed=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="security_hotspots_reviewed") | .value // "0.0"')
+          coverage=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="coverage") | .value // "0.0"')
+          duplications=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="duplicated_lines_density") | .value // "0.0"')
+          
+          if [[ "$status" == "OK" ]]; then
+            header="✅ SonarQube Quality Gate PASSED for project *$project_name* (Gate: $gate_name)"
+          else
+            header="❌ SonarQube Quality Gate FAILED for project *$project_name* (Gate: $gate_name)"
+          fi
+          
+          message="$header
+Branch: ${{ github.ref_name }}
+Repository: ${{ github.repository }}
+Analysis ID: $analysis_id
+
+*Conditions:*
+$conditions
+
+*Extra Metrics:*
+Hotspots Reviewed: $hotspots_reviewed%
+Coverage: $coverage%
+Duplications: $duplications%
+
+View dashboard: $SONAR_HOST_URL/dashboard?id=rmjob-project"
+          
+          payload=$(jq -n --arg text "$message" '{text: $text}')
+          
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
