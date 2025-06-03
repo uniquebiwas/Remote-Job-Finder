@@ -23,28 +23,46 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v2
         with:
           projectBaseDir: ./
           args: >
-            -Dsonar.projectKey=my-repo
+            -Dsonar.projectKey=rmjob-project
         env:
-          SONAR_HOST_URL: https://636f-103-129-135-38.ngrok-free.app
+          SONAR_HOST_URL: https://474f-103-129-135-38.ngrok-free.app
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Wait for SonarQube analysis to complete
-        run: sleep 10
+        run: sleep 30
 
       - name: Check SonarQube Quality Gate status
         id: quality_gate
         run: |
           echo "Fetching the latest analysis ID from project_analyses/search..."
-          analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-            "${{ env.SONAR_HOST_URL }}/api/project_analyses/search?project=my-repo" \
-            | jq -r '.analyses[0].key')
 
-          echo "Analysis ID: $analysis_id"
+          # Retry for up to 5 times to avoid race conditions
+          for i in {1..5}; do
+            analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+              "${{ env.SONAR_HOST_URL }}/api/project_analyses/search?project=rmjob-project" \
+              | jq -r '.analyses[0].key')
+
+            if [[ -n "$analysis_id" && "$analysis_id" != "null" ]]; then
+              echo "Analysis ID found: $analysis_id"
+              break
+            else
+              echo "Analysis ID not found yet. Retrying in 10 seconds..."
+              sleep 10
+            fi
+          done
+
+          if [[ -z "$analysis_id" || "$analysis_id" == "null" ]]; then
+            echo "❌ Analysis ID not found after retries!"
+            exit 1
+          fi
 
           echo "Fetching the Quality Gate status..."
           status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
@@ -52,7 +70,6 @@ jobs:
             | jq -r '.projectStatus.status')
 
           echo "Quality Gate status: $status"
-
           echo "quality_gate_status=$status" >> "$GITHUB_OUTPUT"
 
           if [[ "$status" != "OK" ]]; then
@@ -62,7 +79,7 @@ jobs:
             echo "✅ Quality Gate passed!"
           fi
         env:
-          SONAR_HOST_URL: https://636f-103-129-135-38.ngrok-free.app
+          SONAR_HOST_URL: https://474f-103-129-135-38.ngrok-free.app
 
       - name: Send Slack Notification
         run: |
@@ -79,6 +96,6 @@ jobs:
 
           curl -X POST -H 'Content-type: application/json' \
             --data "$payload" \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
