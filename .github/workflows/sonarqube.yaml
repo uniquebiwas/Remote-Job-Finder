@@ -44,25 +44,26 @@ jobs:
         run: |
           echo "Fetching the latest analysis ID from project_analyses/search..."
 
-          # Retry for up to 5 times to avoid race conditions
-          for i in {1..5}; do
+          # Retry for up to 10 times (total ~2 minutes) to avoid race conditions
+          for i in {1..10}; do
             analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
               "${{ env.SONAR_HOST_URL }}/api/project_analyses/search?project=rmjob-project" \
               | jq -r '.analyses[0].key')
-
+          
             if [[ -n "$analysis_id" && "$analysis_id" != "null" ]]; then
               echo "Analysis ID found: $analysis_id"
               break
             else
-              echo "Analysis ID not found yet. Retrying in 10 seconds..."
-              sleep 10
+              echo "Analysis ID not found yet (attempt $i). Retrying in 12 seconds..."
+              sleep 12
             fi
           done
-
+          
           if [[ -z "$analysis_id" || "$analysis_id" == "null" ]]; then
             echo "❌ Analysis ID not found after retries!"
             exit 1
           fi
+
 
           echo "Fetching the Quality Gate status..."
           status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
