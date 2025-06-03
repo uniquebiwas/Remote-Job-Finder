@@ -44,7 +44,6 @@ jobs:
         run: |
           echo "Fetching the latest analysis ID from project_analyses/search..."
 
-          # Retry for up to 10 times (total ~2 minutes) to avoid race conditions
           for i in {1..10}; do
             analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
               "${{ env.SONAR_HOST_URL }}/api/project_analyses/search?project=rmjob-project" \
@@ -64,7 +63,6 @@ jobs:
             echo "❌ Analysis ID not found after retries!"
             exit 1
           fi
-
 
           echo "Fetching the Quality Gate status..."
           status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
@@ -96,7 +94,7 @@ jobs:
           gate_name=$(echo "$quality_gate_json" | jq -r '.projectStatus.qualityGate.name')
           status=$(echo "$quality_gate_json" | jq -r '.projectStatus.status')
           
-          # Extract conditions (metric, status, actual value)
+          # Extract conditions with metric, status and actual value
           conditions=$(echo "$quality_gate_json" | jq -r '.projectStatus.conditions[] | "\(.metricKey): \(.status) (value: \(.actualValue // "N/A"))"')
           
           # Fetch extra metrics from measures API (hotspots reviewed, coverage, duplications)
@@ -112,20 +110,9 @@ jobs:
             header="❌ SonarQube Quality Gate FAILED for project *$project_name* (Gate: $gate_name)"
           fi
           
-          message="$header
-Branch: ${{ github.ref_name }}
-Repository: ${{ github.repository }}
-Analysis ID: $analysis_id
-
-*Conditions:*
-$conditions
-
-*Extra Metrics:*
-Hotspots Reviewed: $hotspots_reviewed%
-Coverage: $coverage%
-Duplications: $duplications%
-
-View dashboard: $SONAR_HOST_URL/dashboard?id=rmjob-project"
+          # Build message with multiline conditions safely using printf
+          message=$(printf "%s\nBranch: %s\nRepository: %s\nAnalysis ID: %s\n\n*Conditions:*\n%s\n\n*Extra Metrics:*\nHotspots Reviewed: %s%%\nCoverage: %s%%\nDuplications: %s%%\n\nView dashboard: %s/dashboard?id=rmjob-project" \
+            "$header" "${{ github.ref_name }}" "${{ github.repository }}" "$analysis_id" "$conditions" "$hotspots_reviewed" "$coverage" "$duplications" "$SONAR_HOST_URL")
           
           payload=$(jq -n --arg text "$message" '{text: $text}')
           
