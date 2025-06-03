@@ -33,7 +33,7 @@ jobs:
           args: >
             -Dsonar.projectKey=rmjob-project
         env:
-          SONAR_HOST_URL: http://66.45.225.232:9000/
+          SONAR_HOST_URL: http://66.45.225.232:9000
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Wait for SonarQube analysis to complete
@@ -80,7 +80,7 @@ jobs:
             echo "✅ Quality Gate passed!"
           fi
         env:
-          SONAR_HOST_URL: http://66.45.225.232:9000/
+          SONAR_HOST_URL: http://66.45.225.232:9000
 
       - name: Send Slack Notification
         run: |
