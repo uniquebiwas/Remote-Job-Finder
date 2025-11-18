@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     container_name: remotejob_container
-    image: remotejobimage
+    image: remotejobimage:${BUILD_NUMBER}
     build:
       context: .
       dockerfile: Dockerfile
