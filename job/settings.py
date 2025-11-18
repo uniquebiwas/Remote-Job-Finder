@@ -86,12 +86,12 @@ WSGI_APPLICATION = 'job.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # DATABASES = {
 #     'default': {
@@ -104,16 +104,16 @@ WSGI_APPLICATION = 'job.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ps_db',
-        'USER': 'ps_user',
-        'PASSWORD': 'SecurePassword',
-        'HOST': '20.70.239.117',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ps_db',
+#         'USER': 'ps_user',
+#         'PASSWORD': 'SecurePassword',
+#         'HOST': '20.70.239.117',
+#         'PORT': '5432',
+#     }
+# }
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
