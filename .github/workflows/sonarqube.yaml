@@ -1,119 +1,119 @@
-name: SonarQube Scan
+# name: SonarQube Scan
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
 
-jobs:
-  sonarqube:
-    name: SonarQube analysis
-    runs-on: ubuntu-latest
+# jobs:
+#   sonarqube:
+#     name: SonarQube analysis
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+#       - name: Set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           distribution: 'temurin'
+#           java-version: '17'
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+#       - name: Install jq
+#         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v2
-        with:
-          projectBaseDir: ./
-          args: >
-            -Dsonar.projectKey=rmjob-project
-        env:
-          SONAR_HOST_URL: http://66.45.225.232:9000
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#       - name: SonarQube Scan
+#         uses: SonarSource/sonarqube-scan-action@v2
+#         with:
+#           projectBaseDir: ./
+#           args: >
+#             -Dsonar.projectKey=rmjob-project
+#         env:
+#           SONAR_HOST_URL: http://66.45.225.232:9000
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Wait for SonarQube analysis to complete
-        run: sleep 30
+#       - name: Wait for SonarQube analysis to complete
+#         run: sleep 30
 
-      - name: Check SonarQube Quality Gate status
-        id: quality_gate
-        run: |
-          echo "Fetching the latest analysis ID from project_analyses/search..."
+#       - name: Check SonarQube Quality Gate status
+#         id: quality_gate
+#         run: |
+#           echo "Fetching the latest analysis ID from project_analyses/search..."
 
-          for i in {1..10}; do
-            analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-              "${{ env.SONAR_HOST_URL }}/api/project_analyses/search?project=rmjob-project" \
-              | jq -r '.analyses[0].key')
+#           for i in {1..10}; do
+#             analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+#               "${{ env.SONAR_HOST_URL }}/api/project_analyses/search?project=rmjob-project" \
+#               | jq -r '.analyses[0].key')
           
-            if [[ -n "$analysis_id" && "$analysis_id" != "null" ]]; then
-              echo "Analysis ID found: $analysis_id"
-              echo "analysis_id=$analysis_id" >> "$GITHUB_OUTPUT"
-              break
-            else
-              echo "Analysis ID not found yet (attempt $i). Retrying in 12 seconds..."
-              sleep 12
-            fi
-          done
+#             if [[ -n "$analysis_id" && "$analysis_id" != "null" ]]; then
+#               echo "Analysis ID found: $analysis_id"
+#               echo "analysis_id=$analysis_id" >> "$GITHUB_OUTPUT"
+#               break
+#             else
+#               echo "Analysis ID not found yet (attempt $i). Retrying in 12 seconds..."
+#               sleep 12
+#             fi
+#           done
           
-          if [[ -z "$analysis_id" || "$analysis_id" == "null" ]]; then
-            echo "❌ Analysis ID not found after retries!"
-            exit 1
-          fi
+#           if [[ -z "$analysis_id" || "$analysis_id" == "null" ]]; then
+#             echo "❌ Analysis ID not found after retries!"
+#             exit 1
+#           fi
 
-          echo "Fetching the Quality Gate status..."
-          status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-            "${{ env.SONAR_HOST_URL }}/api/qualitygates/project_status?analysisId=$analysis_id" \
-            | jq -r '.projectStatus.status')
+#           echo "Fetching the Quality Gate status..."
+#           status=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+#             "${{ env.SONAR_HOST_URL }}/api/qualitygates/project_status?analysisId=$analysis_id" \
+#             | jq -r '.projectStatus.status')
 
-          echo "Quality Gate status: $status"
-          echo "quality_gate_status=$status" >> "$GITHUB_OUTPUT"
+#           echo "Quality Gate status: $status"
+#           echo "quality_gate_status=$status" >> "$GITHUB_OUTPUT"
 
-          if [[ "$status" != "OK" ]]; then
-            echo "❌ Quality Gate failed!"
-            exit 1
-          else
-            echo "✅ Quality Gate passed!"
-          fi
-        env:
-          SONAR_HOST_URL: http://66.45.225.232:9000
+#           if [[ "$status" != "OK" ]]; then
+#             echo "❌ Quality Gate failed!"
+#             exit 1
+#           else
+#             echo "✅ Quality Gate passed!"
+#           fi
+#         env:
+#           SONAR_HOST_URL: http://66.45.225.232:9000
 
-      - name: Send Slack Notification with Details
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: http://66.45.225.232:9000
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          analysis_id="${{ steps.quality_gate.outputs.analysis_id }}"
-          quality_gate_json=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/qualitygates/project_status?analysisId=$analysis_id")
+#       - name: Send Slack Notification with Details
+#         env:
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#           SONAR_HOST_URL: http://66.45.225.232:9000
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#         run: |
+#           analysis_id="${{ steps.quality_gate.outputs.analysis_id }}"
+#           quality_gate_json=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/qualitygates/project_status?analysisId=$analysis_id")
           
-          project_name=$(echo "$quality_gate_json" | jq -r '.projectStatus.projectName')
-          gate_name=$(echo "$quality_gate_json" | jq -r '.projectStatus.qualityGate.name')
-          status=$(echo "$quality_gate_json" | jq -r '.projectStatus.status')
+#           project_name=$(echo "$quality_gate_json" | jq -r '.projectStatus.projectName')
+#           gate_name=$(echo "$quality_gate_json" | jq -r '.projectStatus.qualityGate.name')
+#           status=$(echo "$quality_gate_json" | jq -r '.projectStatus.status')
           
-          # Extract conditions with metric, status and actual value
-          conditions=$(echo "$quality_gate_json" | jq -r '.projectStatus.conditions[] | "\(.metricKey): \(.status) (value: \(.actualValue // "N/A"))"')
+#           # Extract conditions with metric, status and actual value
+#           conditions=$(echo "$quality_gate_json" | jq -r '.projectStatus.conditions[] | "\(.metricKey): \(.status) (value: \(.actualValue // "N/A"))"')
           
-          # Fetch extra metrics from measures API (hotspots reviewed, coverage, duplications)
-          measures_json=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=rmjob-project&metricKeys=security_hotspots_reviewed,coverage,duplicated_lines_density")
+#           # Fetch extra metrics from measures API (hotspots reviewed, coverage, duplications)
+#           measures_json=$(curl -s -u "$SONAR_TOKEN:" "$SONAR_HOST_URL/api/measures/component?component=rmjob-project&metricKeys=security_hotspots_reviewed,coverage,duplicated_lines_density")
           
-          hotspots_reviewed=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="security_hotspots_reviewed") | .value // "0.0"')
-          coverage=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="coverage") | .value // "0.0"')
-          duplications=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="duplicated_lines_density") | .value // "0.0"')
+#           hotspots_reviewed=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="security_hotspots_reviewed") | .value // "0.0"')
+#           coverage=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="coverage") | .value // "0.0"')
+#           duplications=$(echo "$measures_json" | jq -r '.component.measures[] | select(.metric=="duplicated_lines_density") | .value // "0.0"')
           
-          if [[ "$status" == "OK" ]]; then
-            header="✅ SonarQube Quality Gate PASSED for project *$project_name* (Gate: $gate_name)"
-          else
-            header="❌ SonarQube Quality Gate FAILED for project *$project_name* (Gate: $gate_name)"
-          fi
+#           if [[ "$status" == "OK" ]]; then
+#             header="✅ SonarQube Quality Gate PASSED for project *$project_name* (Gate: $gate_name)"
+#           else
+#             header="❌ SonarQube Quality Gate FAILED for project *$project_name* (Gate: $gate_name)"
+#           fi
           
-          # Build message with multiline conditions safely using printf
-          message=$(printf "%s\nBranch: %s\nRepository: %s\nAnalysis ID: %s\n\n*Conditions:*\n%s\n\n*Extra Metrics:*\nHotspots Reviewed: %s%%\nCoverage: %s%%\nDuplications: %s%%\n\nView dashboard: %s/dashboard?id=rmjob-project" \
-            "$header" "${{ github.ref_name }}" "${{ github.repository }}" "$analysis_id" "$conditions" "$hotspots_reviewed" "$coverage" "$duplications" "$SONAR_HOST_URL")
+#           # Build message with multiline conditions safely using printf
+#           message=$(printf "%s\nBranch: %s\nRepository: %s\nAnalysis ID: %s\n\n*Conditions:*\n%s\n\n*Extra Metrics:*\nHotspots Reviewed: %s%%\nCoverage: %s%%\nDuplications: %s%%\n\nView dashboard: %s/dashboard?id=rmjob-project" \
+#             "$header" "${{ github.ref_name }}" "${{ github.repository }}" "$analysis_id" "$conditions" "$hotspots_reviewed" "$coverage" "$duplications" "$SONAR_HOST_URL")
           
-          payload=$(jq -n --arg text "$message" '{text: $text}')
+#           payload=$(jq -n --arg text "$message" '{text: $text}')
           
-          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
+#           curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
